@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Генератор news.json</title>
+<style>
+  :root{
+    --accent:#4fb0a9; --accent2:#17ba84;
+    --bg:#0b0d10; --bg2:#12151a; --card:#161a20; --card2:#1c212a;
+    --text:#eef2f5; --muted:#9aa6b2; --line:rgba(255,255,255,.09);
+    --radius:14px; --font:'Inter',system-ui,-apple-system,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;padding-bottom:90px}
+  a{color:var(--accent)}
+  ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:#2a2f37;border-radius:5px}
+
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px}
+  header{padding:40px 0 20px;text-align:center;border-bottom:1px solid var(--line);margin-bottom:26px}
+  h1{font-size:clamp(24px,4vw,34px);font-weight:900;letter-spacing:-.02em;
+    background:linear-gradient(120deg,var(--text),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  header p{color:var(--muted);margin-top:8px;font-size:14px}
+
+  .section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:22px}
+  .section > h2{font-size:16px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .section > h2 .badge{font-size:11px;background:var(--card2);color:var(--muted);padding:3px 9px;border-radius:99px;font-weight:500}
+
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500}
+  .field input,.field textarea,.field select{width:100%;padding:10px 12px;border-radius:10px;font-size:14px;font-family:inherit;
+    background:var(--bg2);border:1px solid var(--line);color:var(--text)}
+  .field textarea{resize:vertical;min-height:60px;line-height:1.6}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--accent)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}.row .field{flex:1;min-width:140px}
+  .field input[type=color]{height:42px;padding:4px;cursor:pointer}
+
+  .btn{border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;
+    background:var(--card2);color:var(--text);transition:.2s;display:inline-flex;align-items:center;gap:7px}
+  .btn:hover{background:#252c37}
+  .btn svg{width:16px;height:16px}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#001}
+  .btn-primary:hover{opacity:.9;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+  .btn-danger:hover{background:rgba(237,66,69,.25);color:#ff9a9a}
+  .btn-sm{padding:6px 11px;font-size:12.5px}
+
+  /* socials */
+  .soc-row{display:flex;gap:8px;margin-bottom:8px}
+  .soc-row select{width:130px;flex-shrink:0}
+  .soc-row input{flex:1}
+
+  /* posts */
+  .post-card{background:var(--card2);border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+  .post-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+  .post-head .idx{width:24px;height:24px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:var(--muted);flex-shrink:0}
+  .post-head .ptitle{flex:1;font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .post-head .pdate{font-size:12px;color:var(--muted)}
+  .post-head .chev{transition:transform .2s;color:var(--muted)}
+  .post-card.open .chev{transform:rotate(180deg)}
+  .post-body{display:none;padding:0 14px 16px;border-top:1px solid var(--line)}
+  .post-card.open .post-body{display:block}
+  .post-actions{display:flex;gap:6px;padding:10px 14px 0;flex-wrap:wrap}
+
+  .md-hint{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+  .md-hint code{background:var(--bg);padding:1px 5px;border-radius:4px}
+
+  .preview{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:8px;font-size:14.5px}
+  .preview:empty{display:none}
+  .preview h2{font-size:19px;margin:14px 0 8px}.preview h3{font-size:16px;margin:12px 0 6px}
+  .preview p{margin:8px 0}.preview ul{margin:8px 0;padding-left:22px}
+  .preview blockquote{border-left:3px solid var(--accent);padding-left:14px;margin:10px 0;color:var(--muted);font-style:italic}
+  .preview code{background:var(--card2);padding:2px 6px;border-radius:5px;font-size:.9em}
+  .preview a{text-decoration:underline}
+
+  /* sticky action bar */
+  .actionbar{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(11,13,16,.92);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);padding:12px 18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);z-index:100;
+    background:var(--card2);border:1px solid var(--line);padding:11px 18px;border-radius:12px;font-size:13px;
+    opacity:0;transition:.3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  input[type=file]{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📝 Генератор news.json</h1>
+    <p>Заполни форму → скачай <code>news.json</code> → положи в папку <code>blog/</code> (заменив старый). Всё автосохраняется в браузере.</p>
+  </header>
+
+  <!-- BLOG SETTINGS -->
+  <div class="section">
+    <h2>⚙️ Настройки блога</h2>
+    <div class="row">
+      <div class="field"><label>Заголовок</label><input id="g-title" placeholder="Rad1kal / blog"></div>
+      <div class="field"><label>Автор</label><input id="g-author" placeholder="Rad1kal"></div>
+    </div>
+    <div class="field"><label>Подзаголовок</label><input id="g-subtitle" placeholder="мысли и апдейты"></div>
+    <div class="field"><label>Ссылка на аватар</label><input id="g-avatar" placeholder="https://…"></div>
+    <div class="row">
+      <div class="field"><label>Акцент 1</label><input type="color" id="g-accent" value="#4fb0a9"></div>
+      <div class="field"><label>Акцент 2</label><input type="color" id="g-accent2" value="#17ba84"></div>
+    </div>
+    <label style="font-size:12px;color:var(--muted);display:block;margin:6px 0 8px">Соцсети</label>
+    <div id="g-socials"></div>
+    <button class="btn btn-sm" id="add-social">+ соцсеть</button>
+  </div>
+
+  <!-- POSTS -->
+  <div class="section">
+    <h2>🗞️ Посты <span class="badge" id="post-count">0</span></h2>
+    <div id="posts"></div>
+    <button class="btn btn-primary" id="add-post" style="margin-top:6px">+ Добавить пост</button>
+  </div>
+</div>
+
+<div class="actionbar">
+  <button class="btn btn-primary" id="download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Скачать news.json</button>
+  <button class="btn" id="copy">📋 Копировать</button>
+  <button class="btn" id="import-btn">⬆ Импорт</button>
+  <input type="file" id="import-file" accept="application/json,.json">
+  <a class="btn" href="../blog/" target="_blank">👁 Блог</a>
+  <a class="btn" href="../" target="_blank">🏠 Визитка</a>
+  <button class="btn btn-danger" id="clear">🗑 Очистить</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SOCIAL_LIST=['telegram','github','discord','twitter','youtube','instagram','vk','tiktok','twitch','website'];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const KEY='news_gen_v1';
+let D=load();
+function blank(){return{title:'Rad1kal / blog',subtitle:'мысли, апдейты и всякое интересное',author:'Rad1kal',
+ avatar:'',accent:'#4fb0a9',accent2:'#17ba84',socials:[{type:'telegram',url:''}],posts:[]}}
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return blank()}
+function save(){localStorage.setItem(KEY,JSON.stringify(D))}
+
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ---- mini markdown preview ---- */
+function md(src){
+ const lines=String(src||'').split('\n');let html='',inList=false,inQuote=false;
+ const inline=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+   .replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g,'$1<em>$2</em>')
+   .replace(/`([^`]+?)`/g,'<code>$1</code>')
+   .replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank">$1</a>');
+ const cl=()=>{if(inList){html+='</ul>';inList=false}},cq=()=>{if(inQuote){html+='</blockquote>';inQuote=false}};
+ for(const raw of lines){const l=raw.trim();
+   if(!l){cl();cq();continue}
+   if(l.startsWith('### ')){cl();cq();html+='<h3>'+inline(l.slice(4))+'</h3>';continue}
+   if(l.startsWith('## ')){cl();cq();html+='<h2>'+inline(l.slice(3))+'</h2>';continue}
+   if(l.startsWith('> ')){cl();if(!inQuote){html+='<blockquote>';inQuote=true}html+=inline(l.slice(2))+' ';continue}
+   if(/^[-*] /.test(l)){cq();if(!inList){html+='<ul>';inList=true}html+='<li>'+inline(l.slice(2))+'</li>';continue}
+   if(/^\d+\. /.test(l)){cq();if(!inList){html+='<ul>';inList=true}html+='<li>'+inline(l.replace(/^\d+\.\s/,''))+'</li>';continue}
+   cl();cq();html+='<p>'+inline(l)+'</p>';
+ }
+ cl();cq();return html;
+}
+
+/* ---- blog settings binding ---- */
+function bindBlog(){
+ $('g-title').value=D.title||'';$('g-author').value=D.author||'';$('g-subtitle').value=D.subtitle||'';
+ $('g-avatar').value=D.avatar||'';$('g-accent').value=D.accent||'#4fb0a9';$('g-accent2').value=D.accent2||'#17ba84';
+ renderSocials();
+}
+[['g-title','title'],['g-author','author'],['g-subtitle','subtitle'],['g-avatar','avatar'],['g-accent','accent'],['g-accent2','accent2']]
+ .forEach(([id,k])=>$(id).addEventListener('input',e=>{D[k]=e.target.value;save()}));
+
+function renderSocials(){
+ $('g-socials').innerHTML=(D.socials||[]).map((s,i)=>{
+   const opts=SOCIAL_LIST.map(t=>`<option value="${t}" ${t===s.type?'selected':''}>${t}</option>`).join('');
+   return`<div class="soc-row"><select data-i="${i}" data-f="type">${opts}</select>
+     <input data-i="${i}" data-f="url" value="${esc(s.url||'')}" placeholder="https://…">
+     <button class="btn btn-sm btn-danger" data-del="${i}">✕</button></div>`}).join('');
+ $('g-socials').querySelectorAll('select,input').forEach(el=>el.oninput=()=>{
+   D.socials[+el.dataset.i][el.dataset.f]=el.value;save()});
+ $('g-socials').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+   D.socials.splice(+b.dataset.del,1);save();renderSocials()});
+}
+$('add-social').onclick=()=>{D.socials=D.socials||[];D.socials.push({type:'website',url:''});save();renderSocials()};
+
+/* ---- posts ---- */
+function nextId(){return (D.posts||[]).reduce((m,p)=>Math.max(m,+p.id||0),0)+1}
+function renderPosts(){
+ $('post-count').textContent=(D.posts||[]).length;
+ $('posts').innerHTML=(D.posts||[]).map((p,i)=>`
+  <div class="post-card ${p._open?'open':''}" data-i="${i}">
+    <div class="post-head" data-toggle="${i}">
+      <span class="idx">${i+1}</span>
+      <span class="ptitle">${esc(p.title||'Без названия')}</span>
+      <span class="pdate">${esc(p.date||'')}</span>
+      <span class="chev">▾</span>
+    </div>
+    <div class="post-body">
+      <div class="post-actions">
+        <button class="btn btn-sm" data-up="${i}" ${i===0?'disabled':''}>↑ выше</button>
+        <button class="btn btn-sm" data-down="${i}" ${i===D.posts.length-1?'disabled':''}>↓ ниже</button>
+        <button class="btn btn-sm btn-danger" data-delp="${i}">🗑 удалить</button>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="field" style="flex:2"><label>Заголовок</label><input data-pi="${i}" data-pf="title" value="${esc(p.title||'')}"></div>
+        <div class="field"><label>Дата</label><input type="date" data-pi="${i}" data-pf="date" value="${esc(p.date||'')}"></div>
+      </div>
+      <div class="field"><label>Обложка (URL картинки)</label><input data-pi="${i}" data-pf="cover" value="${esc(p.cover||'')}" placeholder="https://…"></div>
+      <div class="field"><label>Теги (через запятую)</label><input data-pi="${i}" data-pf="tags" value="${esc((p.tags||[]).join(', '))}" placeholder="проект, web"></div>
+      <div class="field"><label>Краткое описание (для карточки)</label><textarea data-pi="${i}" data-pf="excerpt">${esc(p.excerpt||'')}</textarea></div>
+      <div class="field"><label>Текст статьи (markdown)</label><textarea data-pi="${i}" data-pf="body" style="min-height:140px">${esc(p.body||'')}</textarea>
+        <div class="md-hint"><code>## Заголовок</code> · <code>**жирный**</code> · <code>*курсив*</code> · <code>\`код\`</code> · <code>&gt; цитата</code> · <code>- список</code> · <code>[текст](https://ссылка)</code></div>
+      </div>
+      <div class="preview" data-prev="${i}">${md(p.body)}</div>
+    </div>
+  </div>`).join('') || '<p style="color:var(--muted);font-size:14px">Постов пока нет. Нажми «Добавить пост».</p>';
+
+ $('posts').querySelectorAll('[data-toggle]').forEach(h=>h.onclick=()=>{
+   const i=+h.dataset.toggle;D.posts[i]._open=!D.posts[i]._open;renderPosts()});
+ $('posts').querySelectorAll('[data-pi]').forEach(el=>el.oninput=()=>{
+   const i=+el.dataset.pi,f=el.dataset.pf;let v=el.value;
+   if(f==='tags')v=v.split(',').map(t=>t.trim()).filter(Boolean);
+   D.posts[i][f]=v;save();
+   if(f==='body'){const pv=$('posts').querySelector(`[data-prev="${i}"]`);if(pv)pv.innerHTML=md(v)}
+   if(f==='title'){const t=el.closest('.post-card').querySelector('.ptitle');if(t)t.textContent=v||'Без названия'}
+   if(f==='date'){const d=el.closest('.post-card').querySelector('.pdate');if(d)d.textContent=v}
+ });
+ $('posts').querySelectorAll('[data-delp]').forEach(b=>b.onclick=()=>{
+   if(confirm('Удалить пост?')){D.posts.splice(+b.dataset.delp,1);save();renderPosts()}});
+ $('posts').querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.up;
+   [D.posts[i-1],D.posts[i]]=[D.posts[i],D.posts[i-1]];save();renderPosts()});
+ $('posts').querySelectorAll('[data-down]').forEach(b=>b.onclick=()=>{const i=+b.dataset.down;
+   [D.posts[i+1],D.posts[i]]=[D.posts[i],D.posts[i+1]];save();renderPosts()});
+}
+$('add-post').onclick=()=>{
+ D.posts=D.posts||[];
+ D.posts.unshift({id:nextId(),title:'',date:new Date().toISOString().slice(0,10),cover:'',tags:[],excerpt:'',body:'',_open:true});
+ save();renderPosts();scrollTo({top:0,behavior:'smooth'});
+};
+
+/* ---- output ---- */
+function buildJSON(){
+ const clean={
+   title:D.title||'',subtitle:D.subtitle||'',author:D.author||'',avatar:D.avatar||'',
+   accent:D.accent||'#4fb0a9',accent2:D.accent2||'#17ba84',
+   socials:(D.socials||[]).filter(s=>s.url).map(s=>({type:s.type,url:s.url})),
+   posts:(D.posts||[]).map(p=>({
+     id:+p.id,title:p.title||'',date:p.date||'',cover:p.cover||'',
+     tags:p.tags||[],excerpt:p.excerpt||'',body:p.body||''
+   }))
+ };
+ return JSON.stringify(clean,null,2);
+}
+$('download').onclick=()=>{
+ const b=new Blob([buildJSON()],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='news.json';a.click();
+ toast('✅ news.json скачан');
+};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(buildJSON());toast('📋 JSON скопирован')}catch(e){toast('Не удалось скопировать')}};
+$('import-btn').onclick=()=>$('import-file').click();
+$('import-file').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+ rd.onload=()=>{try{const o=JSON.parse(rd.result);o.posts=(o.posts||[]).map(p=>({...p,_open:false}));D=o;save();bindBlog();renderPosts();toast('⬆ Импортировано')}
+ catch(x){toast('Ошибка: не похоже на JSON')}};rd.readAsText(f);e.target.value=''};
+$('clear').onclick=()=>{if(confirm('Стереть всё и начать заново?')){D=blank();save();bindBlog();renderPosts()}};
+
+/* ---- init ---- */
+bindBlog();renderPosts();
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>blog</title>
+<style>
+  :root{
+    --accent:#4fb0a9; --accent2:#17ba84;
+    --bg:#0b0d10; --bg2:#12151a; --card:#161a20;
+    --text:#eef2f5; --muted:#9aa6b2; --line:rgba(255,255,255,.08);
+    --radius:16px; --font:'Inter',system-ui,-apple-system,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;
+    -webkit-font-smoothing:antialiased}
+  a{color:var(--accent)}
+  img{max-width:100%;display:block}
+  ::selection{background:var(--accent);color:#001}
+  ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:#2a2f37;border-radius:5px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+
+  /* glow blobs */
+  .bg-glow{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .bg-glow::before,.bg-glow::after{content:"";position:absolute;width:50vw;height:50vw;border-radius:50%;
+    filter:blur(120px);opacity:.16}
+  .bg-glow::before{background:var(--accent);top:-15vw;left:-10vw}
+  .bg-glow::after{background:var(--accent2);bottom:-20vw;right:-10vw}
+
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px}
+  .home-link{display:inline-block;margin:20px 0 -10px;color:var(--muted);text-decoration:none;font-size:14px;transition:.2s}
+  .home-link:hover{color:var(--accent)}
+
+  /* header */
+  header{padding:64px 0 40px;text-align:center;border-bottom:1px solid var(--line)}
+  .avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;margin:0 auto 18px;
+    border:3px solid transparent;
+    background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,var(--accent),var(--accent2)) border-box;
+    box-shadow:0 0 40px rgba(79,176,169,.3)}
+  h1.title{font-size:clamp(30px,5vw,46px);font-weight:900;letter-spacing:-.02em;
+    background:linear-gradient(120deg,var(--text),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .subtitle{color:var(--muted);margin-top:10px;font-size:16px}
+  .h-socials{display:flex;gap:10px;justify-content:center;margin-top:22px}
+  .h-socials a{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    background:var(--card);border:1px solid var(--line);color:var(--text);transition:.25s}
+  .h-socials a:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 20px rgba(79,176,169,.25)}
+  .h-socials svg{width:20px;height:20px}
+
+  /* search */
+  .search{position:relative;max-width:440px;margin:28px auto 0}
+  .search input{width:100%;padding:13px 16px 13px 44px;border-radius:14px;font-size:15px;font-family:inherit;
+    background:var(--card);border:1px solid var(--line);color:var(--text);transition:.2s}
+  .search input::placeholder{color:var(--muted)}
+  .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,176,169,.15)}
+  .search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
+  .search .clr{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:22px;height:22px;border:none;
+    background:rgba(255,255,255,.08);color:var(--muted);border-radius:50%;cursor:pointer;display:none;font-size:15px;line-height:1}
+  .search .clr.show{display:block}
+  .search .clr:hover{color:var(--text)}
+
+  /* tag filter */
+  .filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:18px 0 8px}
+  .chip{padding:6px 15px;border-radius:99px;font-size:13px;cursor:pointer;color:var(--muted);
+    background:var(--card);border:1px solid var(--line);transition:.2s;user-select:none}
+  .chip:hover{color:var(--text)}
+  .chip.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#001;border-color:transparent;font-weight:600}
+
+  /* feed */
+  .feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;padding:34px 0 80px}
+  .post{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s;display:flex;flex-direction:column}
+  .post:hover{transform:translateY(-5px);border-color:rgba(79,176,169,.5);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+  .post .cover{aspect-ratio:16/9;object-fit:cover;width:100%;background:var(--bg2)}
+  .post .body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .post .meta{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted)}
+  .post .tag{color:var(--accent);font-weight:600}
+  .post h2{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.3}
+  .post .excerpt{color:var(--muted);font-size:14px;flex:1}
+  .post .read{color:var(--accent);font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px}
+  .post .read svg{width:14px;height:14px;transition:transform .2s}
+  .post:hover .read svg{transform:translateX(4px)}
+
+  .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:60px 0}
+
+  footer{border-top:1px solid var(--line);padding:30px 0 50px;text-align:center;color:var(--muted);font-size:13px}
+
+  /* article overlay */
+  .overlay{position:fixed;inset:0;z-index:100;background:rgba(6,8,10,.7);backdrop-filter:blur(6px);
+    opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .article{max-width:760px;margin:0 auto;min-height:100%;background:var(--bg2);
+    padding:0 0 60px;transform:translateY(30px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .overlay.open .article{transform:none}
+  .article .hero{width:100%;aspect-ratio:21/9;object-fit:cover;background:var(--bg)}
+  .art-bar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;
+    padding:14px 24px;background:rgba(18,21,26,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .art-bar .back{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text);font-size:14px;
+    background:none;border:none;font-family:inherit}
+  .art-bar .back:hover{color:var(--accent)}
+  .art-bar .back svg{width:18px;height:18px}
+  .art-close{cursor:pointer;color:var(--muted);background:none;border:none;font-size:26px;line-height:1}
+  .art-close:hover{color:var(--text)}
+  .art-content{padding:34px 30px 0}
+  .art-content .meta{display:flex;gap:12px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap}
+  .art-content .meta .tag{color:var(--accent);font-weight:600}
+  .art-content h1{font-size:clamp(26px,4vw,38px);font-weight:900;letter-spacing:-.02em;line-height:1.2;margin-bottom:22px}
+  .art-body{font-size:16.5px;color:#dfe6ec}
+  .art-body h2{font-size:24px;font-weight:800;margin:30px 0 12px;letter-spacing:-.01em}
+  .art-body h3{font-size:20px;font-weight:700;margin:26px 0 10px}
+  .art-body p{margin:14px 0}
+  .art-body ul,.art-body ol{margin:14px 0;padding-left:24px}
+  .art-body li{margin:6px 0}
+  .art-body a{text-decoration:underline;text-underline-offset:3px}
+  .art-body strong{color:#fff}
+  .art-body code{background:#0d1014;border:1px solid var(--line);padding:2px 6px;border-radius:6px;font-size:.9em;
+    font-family:ui-monospace,Menlo,Consolas,monospace}
+  .art-body blockquote{border-left:3px solid var(--accent);padding:6px 0 6px 18px;margin:18px 0;color:var(--muted);font-style:italic}
+
+  .loading{text-align:center;color:var(--muted);padding:80px 0}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div class="wrap">
+  <a href="../" class="home-link">← на визитку</a>
+  <header>
+    <img class="avatar" id="avatar" src="" alt="" onerror="this.style.display='none'">
+    <h1 class="title" id="title">blog</h1>
+    <p class="subtitle" id="subtitle"></p>
+    <div class="h-socials" id="socials"></div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="search" placeholder="Поиск по постам и тегам…" autocomplete="off">
+      <button class="clr" id="search-clr" title="Очистить">×</button>
+    </div>
+    <div class="filters" id="filters"></div>
+  </header>
+
+  <main class="feed" id="feed"><div class="loading">Загрузка постов…</div></main>
+
+  <footer id="footer"></footer>
+</div>
+
+<!-- article reader -->
+<div class="overlay" id="overlay">
+  <article class="article">
+    <div class="art-bar">
+      <button class="back" id="art-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Назад</button>
+      <button class="art-close" id="art-close" title="Закрыть">×</button>
+    </div>
+    <img class="hero" id="art-hero" src="" alt="" onerror="this.style.display='none'">
+    <div class="art-content">
+      <div class="meta" id="art-meta"></div>
+      <h1 id="art-title"></h1>
+      <div class="art-body" id="art-body"></div>
+    </div>
+  </article>
+</div>
+
+<script>
+const SOCIAL_SVG={
+ telegram:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3l-3.3 15.6c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.2-8.3c.4-.4-.1-.6-.6-.2L6.2 13.6l-4.9-1.5c-1.1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.7.2 1.4 1.3z"/></svg>',
+ github:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 002 12c0 4.4 2.9 8.2 6.8 9.5.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .8.1-.7.3-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 015 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .3.3.6.9.6 1.9v2.8c0 .3.2.6.7.5A10 10 0 0012 2z"/></svg>',
+ discord:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0015.4 3l-.2.5a18 18 0 015.6 1.5A17.7 17.7 0 003 5a18 18 0 015.6-1.5L8.4 3A19.8 19.8 0 003.6 4.4C.8 8.6.1 12.6.4 16.6a20 20 0 006 3l.4-.7c-.7-.2-1.3-.5-1.9-.9l.5-.3a13.7 13.7 0 0012 0l.5.3c-.6.4-1.2.7-1.9.9l.4.7a20 20 0 006-3c.4-4.7-.6-8.7-3.5-12.2zM8.5 14.3c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2zm7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2z"/></svg>',
+ twitter:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.3 8.3L23 22h-6.8l-5.3-6.9L4.8 22H1.7l7.8-8.9L1 2h6.9l4.8 6.3z"/></svg>',
+ youtube:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.5s-.2-1.6-.9-2.3c-.8-.9-1.8-.9-2.2-1C16.8 4 12 4 12 4s-4.8 0-7.9.2c-.4.1-1.4.1-2.2 1C1.2 5.9 1 7.5 1 7.5S.8 9.4.8 11.3v1.4c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.8.9 1.9.8 2.4.9 1.7.2 7.7.2 7.7.2s4.8 0 7.9-.2c.4-.1 1.4-.1 2.2-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-1.4c0-1.9-.2-3.8-.2-3.8zM9.8 15.2V8.8l6.2 3.2z"/></svg>',
+ website:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20"/></svg>'
+};
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let DATA={posts:[]}, activeTag='all', query='';
+
+/* ---- mini markdown (safe: escapes first) ---- */
+function md(src){
+ const lines=String(src||'').split('\n');
+ let html='',inList=false,inQuote=false;
+ const inline=t=>esc(t)
+   .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+   .replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g,'$1<em>$2</em>')
+   .replace(/`([^`]+?)`/g,'<code>$1</code>')
+   .replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+ const closeList=()=>{if(inList){html+='</ul>';inList=false}};
+ const closeQuote=()=>{if(inQuote){html+='</blockquote>';inQuote=false}};
+ for(let raw of lines){
+   const l=raw.trim();
+   if(!l){closeList();closeQuote();continue}
+   if(l.startsWith('### ')){closeList();closeQuote();html+='<h3>'+inline(l.slice(4))+'</h3>';continue}
+   if(l.startsWith('## ')){closeList();closeQuote();html+='<h2>'+inline(l.slice(3))+'</h2>';continue}
+   if(l.startsWith('> ')){closeList();if(!inQuote){html+='<blockquote>';inQuote=true}html+=inline(l.slice(2))+' ';continue}
+   if(/^[-*] /.test(l)){closeQuote();if(!inList){html+='<ul>';inList=true}html+='<li>'+inline(l.slice(2))+'</li>';continue}
+   if(/^\d+\. /.test(l)){closeQuote();if(!inList){html+='<ul>';inList=true}html+='<li>'+inline(l.replace(/^\d+\.\s/,''))+'</li>';continue}
+   closeList();closeQuote();html+='<p>'+inline(l)+'</p>';
+ }
+ closeList();closeQuote();
+ return html;
+}
+
+const fmtDate=d=>{try{return new Date(d).toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'})}catch(e){return d}};
+const readTime=b=>Math.max(1,Math.round(String(b||'').split(/\s+/).length/150))+' мин';
+
+function applyTheme(){
+ if(DATA.accent)document.documentElement.style.setProperty('--accent',DATA.accent);
+ if(DATA.accent2)document.documentElement.style.setProperty('--accent2',DATA.accent2);
+}
+
+function renderHeader(){
+ $('title').textContent=DATA.title||'blog';
+ $('subtitle').textContent=DATA.subtitle||'';
+ if(DATA.avatar)$('avatar').src=DATA.avatar;else $('avatar').style.display='none';
+ document.title=DATA.title||'blog';
+ $('socials').innerHTML=(DATA.socials||[]).map(s=>{
+   const svg=SOCIAL_SVG[s.type]||SOCIAL_SVG.website;
+   return`<a href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.type)}">${svg}</a>`}).join('');
+ // tag chips
+ const tags=[...new Set((DATA.posts||[]).flatMap(p=>p.tags||[]))];
+ $('filters').innerHTML=`<span class="chip active" data-tag="all">Все</span>`+
+   tags.map(t=>`<span class="chip" data-tag="${esc(t)}">${esc(t)}</span>`).join('');
+ $('filters').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+   activeTag=c.dataset.tag;
+   $('filters').querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x===c));
+   renderFeed();
+ });
+ $('footer').innerHTML=`© ${new Date().getFullYear()} ${esc(DATA.author||DATA.title||'')} · powered by static ♥`;
+}
+
+function matchQuery(p){
+ if(!query)return true;
+ const hay=[p.title,p.excerpt,p.body,(p.tags||[]).join(' ')].join(' ').toLowerCase();
+ return query.toLowerCase().split(/\s+/).filter(Boolean).every(w=>hay.includes(w));
+}
+function renderFeed(){
+ const posts=(DATA.posts||[]).slice().sort((a,b)=>new Date(b.date)-new Date(a.date))
+   .filter(p=>activeTag==='all'||(p.tags||[]).includes(activeTag))
+   .filter(matchQuery);
+ if(!posts.length){$('feed').innerHTML=`<div class="empty">Ничего не найдено${query?` по запросу «${esc(query)}»`:''} 🙃</div>`;return}
+ $('feed').innerHTML=posts.map(p=>`
+   <div class="post" data-id="${p.id}">
+     ${p.cover?`<img class="cover" src="${esc(p.cover)}" alt="" onerror="this.remove()">`:''}
+     <div class="body">
+       <div class="meta"><span class="tag">${esc((p.tags||[])[0]||'пост')}</span><span>${fmtDate(p.date)}</span><span>· ${readTime(p.body)}</span></div>
+       <h2>${esc(p.title)}</h2>
+       <p class="excerpt">${esc(p.excerpt||'')}</p>
+       <span class="read">Читать <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+     </div>
+   </div>`).join('');
+ $('feed').querySelectorAll('.post').forEach(el=>el.onclick=()=>openPost(+el.dataset.id));
+}
+
+function openPost(id){
+ const p=(DATA.posts||[]).find(x=>x.id===id);if(!p)return;
+ $('art-meta').innerHTML=`<span class="tag">${esc((p.tags||[]).join(' · ')||'пост')}</span><span>${fmtDate(p.date)}</span><span>· ${readTime(p.body)} чтения</span>`;
+ $('art-title').textContent=p.title;
+ $('art-body').innerHTML=md(p.body);
+ const hero=$('art-hero');if(p.cover){hero.src=p.cover;hero.style.display=''}else hero.style.display='none';
+ $('overlay').scrollTop=0;
+ $('overlay').classList.add('open');document.body.style.overflow='hidden';
+ location.hash='post-'+id;
+}
+function closePost(){$('overlay').classList.remove('open');document.body.style.overflow='';
+ if(location.hash)history.pushState('',document.title,location.pathname+location.search)}
+$('art-close').onclick=closePost;$('art-back').onclick=closePost;
+$('overlay').onclick=e=>{if(e.target===$('overlay'))closePost()};
+addEventListener('keydown',e=>{if(e.key==='Escape')closePost()});
+
+$('search').addEventListener('input',e=>{
+ query=e.target.value.trim();
+ $('search-clr').classList.toggle('show',!!query);
+ renderFeed();
+});
+$('search-clr').onclick=()=>{query='';$('search').value='';$('search-clr').classList.remove('show');$('search').focus();renderFeed()};
+
+async function boot(){
+ try{
+   const res=await fetch('news.json',{cache:'no-store'});
+   if(!res.ok)throw new Error('HTTP '+res.status);
+   DATA=await res.json();
+ }catch(e){
+   $('feed').innerHTML='<div class="empty">Не удалось загрузить <b>news.json</b>.<br><br>'+
+     (location.protocol==='file:'?'Открой сайт через хостинг или локальный сервер — при двойном клике по файлу браузер блокирует чтение JSON.':esc(e.message))+'</div>';
+   return;
+ }
+ applyTheme();renderHeader();renderFeed();
+ // open post from hash on load
+ const m=location.hash.match(/post-(\d+)/);if(m)openPost(+m[1]);
+}
+boot();
+</script>
+</body>
+</html>

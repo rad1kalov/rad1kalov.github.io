@@ -1,0 +1,57 @@
+{
+  "name": "Rad1kal",
+  "rgbName": false,
+  "glitch": false,
+  "clock": false,
+  "discord": "1384900524255744070",
+  "typed": "gLua dev | ui&ux designer | АВТОСТОПОМ ПО ФАЗЕ СНА",
+  "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQM_hN08Rcu5pRwqlgiBI3M_Vlee2uqLl5gEnqb0EuQtQ&s=10",
+  "verified": true,
+  "status": true,
+  "showStats": true,
+  "badges": "gMod, MST, Афганистан",
+  "blog": "blog/",
+  "blogLabel": "Мой блог",
+  "foot": "make afgan great again",
+  "cursor": true,
+  "trail": true,
+  "tilt": true,
+  "neon": false,
+  "viz": false,
+  "vizstyle": "radial",
+  "parallax": true,
+  "confetti": false,
+  "clickSound": true,
+  "particles": "network",
+  "pcount": 200,
+  "pspeed": 4,
+  "accent": "#4fb0a9",
+  "accent2": "#17ba84",
+  "cardop": 35,
+  "blur": 7,
+  "glow": 9,
+  "bgtype": "image",
+  "bgurl": "https://images.genius.com/a316723a21cf8adb376087552c00590f.720x720x1.jpg",
+  "overlay": 66,
+  "music": "https://lajtovo.muzce.com/file/LWmmgI81FH0iaLxJFJLOsrA4QV99gkxqoiZoxUkDTLFP_7JBFXaDFggEAVyxdzck2PPcha-8WP7eHUqpvb5DWNvZYJ-HpHhZC5gYUdRQcqLKMGon6qy7UKs_WEeeE3ErVzm5d9HZxuCNZNthPfWIXI0AIVtOXyq30wOQwDXKRysVD8rcPRa_nGO4WqYqWqY6mH6WlPJn_vIgt40Dx0ad4qfCfhCLzvaJs2opfjabALbzVr9zeI872k-8DLn3dzgfsfgKycQ4sNotXkLe_u6mg7Us3Lb8A2COU_9OIvNO-8Sv4CAb6U8oD7l8uvSBB83Gsr_oG1ya1HtsEvri37r29CRUPjOxhAo4JDUY9LsFRpmNFO-X875tFlUEtsyJGa7Skbduv9Vu2cpYpeX1SsJ1-wUUJumvMRA.mp3",
+  "autoplay": true,
+  "track": "Лайтово",
+  "artist": "Автостопом по фазе сна",
+  "cover": "https://images.genius.com/a316723a21cf8adb376087552c00590f.720x720x1.jpg",
+  "volume": 51,
+  "socials": [
+    {
+      "type": "discord",
+      "url": "https://discord.com/"
+    },
+    {
+      "type": "telegram",
+      "url": "https://t.me/rad1kalc"
+    },
+    {
+      "type": "github",
+      "url": "https://github.com/rad1kalov"
+    }
+  ],
+  "shuffle": false
+}
