@@ -1,609 +1,661 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>bio</title>
-<style>
-  :root{
-    --accent:#7c5cff; --accent2:#00e0ff;
-    --text:#fff; --muted:rgba(255,255,255,.6);
-    --card-bg:rgba(12,12,22,.5); --card-blur:18px;
-    --radius:24px; --overlay:.6; --glow:22px;
-    --font:'Inter',system-ui,sans-serif;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    font-family:var(--font);color:var(--text);background:#05050c;
-    overflow:hidden;min-height:100vh;position:relative;
-    display:flex;align-items:center;justify-content:center;cursor:none;
-  }
-  body.native-cursor{cursor:auto}
-  a,button,.tilt,.social,.play-btn{cursor:none}
-  body.native-cursor a,body.native-cursor button{cursor:pointer}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio</title>
+    <style>
+        :root {
+            --theme-color: #00ffcc;
+            --glow-strength: 20px;
+            --card-bg: rgba(10, 10, 10, 0.6);
+            --card-blur: 16px;
+            --card-radius: 20px;
+            --card-border: rgba(255, 255, 255, 0.15);
+        }
 
-  /* ---- layers ---- */
-  #bg-video,#bg-image{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-4}
-  #bg-image{background-size:cover;background-position:center;display:none}
-  #particles{position:fixed;inset:0;z-index:-3;pointer-events:none}
-  #bg-overlay{position:fixed;inset:0;z-index:-2;
-    background:radial-gradient(circle at 25% 15%,rgba(124,92,255,.28),transparent 55%),
-      radial-gradient(circle at 80% 85%,rgba(0,224,255,.2),transparent 55%),
-      rgba(0,0,0,var(--overlay));}
-  #viz{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.9}
-  #fx{position:fixed;inset:0;z-index:40;pointer-events:none}
+        * { box-sizing: border-box; }
 
-  /* ---- custom cursor ---- */
-  .cur-dot,.cur-ring{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;border-radius:50%;
-    transform:translate(-50%,-50%);will-change:transform}
-  .cur-dot{width:8px;height:8px;background:var(--accent2);box-shadow:0 0 10px var(--accent2)}
-  .cur-ring{width:34px;height:34px;border:2px solid var(--accent);opacity:.7;
-    transition:width .2s,height .2s,background .2s,border-color .2s}
-  .cur-ring.hover{width:52px;height:52px;background:rgba(124,92,255,.18)}
+        body {
+            margin: 0; padding: 0; overflow: hidden;
+            background-color: #050505; color: #fff;
+            font-family: 'Consolas', 'Courier New', monospace;
+            cursor: none; user-select: none;
+        }
 
-  /* ---- enter gate ---- */
-  #gate{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;background:rgba(4,4,10,.9);
-    backdrop-filter:blur(8px);transition:opacity .7s;cursor:none}
-  #gate.hide{opacity:0;pointer-events:none}
-  #gate h2{font-size:clamp(30px,7vw,64px);font-weight:900;letter-spacing:2px;
-    background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));
-    background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
-    animation:shine 3s linear infinite,float 3s ease-in-out infinite}
-  @keyframes shine{to{background-position:200% center}}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-  #gate p{margin-top:18px;color:var(--muted);letter-spacing:5px;text-transform:uppercase;font-size:12px;
-    animation:blink 1.6s ease-in-out infinite}
-  @keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
+        #bg-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none;
+        }
 
-  /* ---- card ---- */
-  .tilt{perspective:1000px}
-  .card{
-    width:min(430px,92vw);position:relative;
-    background:var(--card-bg);backdrop-filter:blur(var(--card-blur));-webkit-backdrop-filter:blur(var(--card-blur));
-    border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);
-    padding:36px 32px 28px;text-align:center;
-    box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 var(--glow) rgba(124,92,255,.25);
-    transform-style:preserve-3d;transition:transform .1s;
-    animation:rise .9s cubic-bezier(.2,.8,.2,1) both;
-  }
-  @keyframes rise{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1}}
-  .card.neon::before{content:"";position:absolute;inset:-2px;border-radius:calc(var(--radius) + 2px);
-    background:linear-gradient(120deg,var(--accent),var(--accent2),var(--accent),var(--accent2));
-    background-size:300% 300%;z-index:-1;animation:border-flow 6s linear infinite;filter:blur(1px)}
-  @keyframes border-flow{to{background-position:300% 0}}
+        .cursor-dot, .cursor-trail {
+            position: fixed; top: 0; left: 0;
+            border-radius: 50%; pointer-events: none;
+            will-change: transform;
+            transform: translate3d(-50%, -50%, 0);
+        }
+        .cursor-dot { width: 6px; height: 6px; background: #fff; z-index: 99999; }
+        .cursor-trail {
+            width: 26px; height: 26px;
+            border: 1.5px solid var(--theme-color);
+            box-shadow: 0 0 var(--glow-strength) var(--theme-color);
+            z-index: 99998;
+        }
 
-  .layer{transform:translateZ(40px)}
-  .avatar-wrap{position:relative;width:126px;height:126px;margin:0 auto 16px}
-  .avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;
-    border:3px solid transparent;
-    background:linear-gradient(#0a0a14,#0a0a14) padding-box,linear-gradient(135deg,var(--accent),var(--accent2)) border-box;
-    box-shadow:0 0 30px rgba(124,92,255,.4)}
-  .avatar-ring{position:absolute;inset:-7px;border-radius:50%;border:2px dashed var(--accent);opacity:.5;
-    animation:spin 8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .status-dot{position:absolute;right:9px;bottom:9px;width:22px;height:22px;border-radius:50%;
-    background:#2ecc71;border:3px solid #0a0a14;box-shadow:0 0 14px #2ecc71;animation:pulseDot 2s infinite}
-  @keyframes pulseDot{0%,100%{box-shadow:0 0 8px #2ecc71}50%{box-shadow:0 0 20px #2ecc71}}
+        #enter-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #050505; z-index: 99990;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: opacity 0.4s ease;
+        }
+        #enter-screen span {
+            font-size: 18px; font-weight: bold; letter-spacing: 2px;
+            color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.4);
+            animation: pulse 1.6s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); text-shadow: 0 0 var(--glow-strength) var(--theme-color); }
+        }
 
-  .name{font-size:30px;font-weight:900;letter-spacing:.5px;display:flex;gap:9px;justify-content:center;align-items:center}
-  .name.rgb{background:linear-gradient(90deg,#ff4d4d,#f9cb28,#42e695,#00e0ff,#7c5cff,#ff4d4d);
-    background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
-    animation:shine 4s linear infinite}
-  .verified{width:22px;height:22px;color:var(--accent2);flex-shrink:0}
-  .typed{margin-top:10px;color:var(--muted);font-size:15px;line-height:1.5;min-height:23px}
-  .caret{display:inline-block;width:2px;height:16px;background:var(--accent2);margin-left:2px;
-    vertical-align:middle;animation:blink 1s step-end infinite}
+        .crt-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+            background-size: 100% 3px, 3px 100%; z-index: -1; pointer-events: none;
+            display: none;
+        }
 
-  .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-  .badge{font-size:11px;padding:5px 13px;border-radius:999px;color:var(--muted);letter-spacing:.5px;
-    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
-    transition:transform .2s,box-shadow .2s}
-  .badge:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(124,92,255,.35);color:#fff}
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            box-shadow: inset 0 0 200px rgba(0,0,0,0.95);
+            z-index: -1; pointer-events: none; display: none;
+        }
 
-  .stats{display:flex;gap:18px;justify-content:center;margin-top:18px;color:var(--muted);font-size:12px}
-  .stats b{display:block;font-size:17px;color:#fff;font-weight:800}
+        .container {
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; perspective: 1000px;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(var(--card-blur)); -webkit-backdrop-filter: blur(var(--card-blur));
+            padding: 35px 40px; border-radius: var(--card-radius);
+            border: 1px solid var(--card-border); text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            transform-style: preserve-3d; width: 320px; will-change: transform;
+        }
 
-  .socials{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
-  .social{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;
-    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;text-decoration:none;
-    transition:transform .3s cubic-bezier(.2,1.4,.4,1),background .3s,box-shadow .3s;position:relative}
-  .social svg{width:23px;height:23px;transition:transform .3s}
-  .social:hover{transform:translateY(-6px) scale(1.1);
-    background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 12px 26px rgba(124,92,255,.5)}
-  .social:hover svg{transform:scale(1.15)}
+        .avatar-box {
+            position: relative; width: 110px; height: 110px;
+            margin: 0 auto 15px auto; transform: translateZ(50px);
+        }
+        .avatar {
+            width: 100%; height: 100%; border-radius: 50%;
+            border: 2px solid var(--card-border); object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+        .status-dot {
+            width: 20px; height: 20px; border-radius: 50%;
+            position: absolute; bottom: 2px; right: 2px;
+            border: 3px solid #0a0a0a; background-color: #747f8d;
+            transition: background-color 0.3s;
+        }
 
-  .player{margin-top:24px;padding:14px;border-radius:18px;text-align:left;
-    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:13px}
-  .cover{width:48px;height:48px;border-radius:11px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.5)}
-  .cover.playing{animation:spin 8s linear infinite;border-radius:50%}
-  .track-info{flex:1;min-width:0}
-  .track-title{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .track-artist{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .progress{height:5px;border-radius:3px;background:rgba(255,255,255,.15);margin-top:9px;cursor:none;position:relative}
-  .progress-fill{height:100%;border-radius:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .play-btn{width:42px;height:42px;border-radius:50%;flex-shrink:0;border:none;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
-    display:flex;align-items:center;justify-content:center;transition:transform .2s}
-  .play-btn:hover{transform:scale(1.1)}
-  .play-btn svg{width:18px;height:18px}
+        h1 {
+            font-size: 22px; margin: 5px 0 3px 0; transform: translateZ(35px);
+            letter-spacing: 0.5px; position: relative; display: inline-block;
+        }
+        h1.glitch:hover { animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; }
+        @keyframes glitch-skew {
+            0% { transform: translateZ(35px) translate(0); text-shadow: 2px 0 var(--theme-color), -2px 0 #ff003c; }
+            20% { transform: translateZ(35px) translate(-2px, 2px); text-shadow: -2px 0 var(--theme-color), 2px 0 #ff003c; }
+            40% { transform: translateZ(35px) translate(-2px, -2px); text-shadow: 2px 0 var(--theme-color), -2px 0 #ff003c; }
+            60% { transform: translateZ(35px) translate(2px, 2px); text-shadow: -2px 0 var(--theme-color), 2px 0 #ff003c; }
+            80% { transform: translateZ(35px) translate(2px, -2px); text-shadow: 2px 0 var(--theme-color), -2px 0 #ff003c; }
+            100% { transform: translateZ(35px) translate(0); text-shadow: 2px 0 var(--theme-color), -2px 0 #ff003c; }
+        }
 
-  .foot{margin-top:20px;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
+        .bio {
+            font-size: 13px; color: var(--theme-color); margin-bottom: 12px;
+            transform: translateZ(30px); min-height: 16px;
+            text-shadow: 0 0 8px var(--theme-color);
+        }
 
-  /* ---- FAB ---- */
-  .fab{position:fixed;bottom:20px;z-index:60;width:46px;height:46px;border-radius:50%;
-    border:1px solid rgba(255,255,255,.15);background:rgba(15,15,25,.6);backdrop-filter:blur(10px);
-    color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s}
-  .fab:hover{transform:scale(1.12);background:rgba(124,92,255,.45)}
-  .fab svg{width:20px;height:20px}
-  #fs{right:20px}#mute{right:76px}#share{right:132px}
+        .discord-status-badge {
+            transform: translateZ(30px); background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--card-border);
+            padding: 7px 12px; border-radius: 8px; font-size: 11px;
+            color: #ddd; margin-bottom: 15px; display: none;
+            align-items: center; justify-content: center;
+        }
+        .discord-status-badge span {
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px;
+        }
 
-  audio{display:none}
+        .links { transform: translateZ(25px); }
+        .links a {
+            display: block; margin: 8px 0; padding: 10px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border);
+            text-decoration: none; color: #fff; border-radius: 8px;
+            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s;
+            font-weight: bold; letter-spacing: 1px; font-size: 13px; cursor: none;
+        }
+        .links a:hover {
+            background: var(--theme-color); color: #000;
+            box-shadow: 0 0 var(--glow-strength) var(--theme-color);
+            border-color: var(--theme-color);
+        }
 
-  /* blog button */
-  .blog-btn{display:inline-flex;align-items:center;gap:9px;margin-top:20px;padding:12px 22px;border-radius:14px;
-    text-decoration:none;font-size:14px;font-weight:700;color:#fff;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    box-shadow:0 8px 22px rgba(124,92,255,.35);transition:transform .25s,box-shadow .25s}
-  .blog-btn:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(124,92,255,.5)}
-  .blog-btn svg{width:18px;height:18px}
+        .player {
+            margin-top: 15px; transform: translateZ(25px); display: flex;
+            align-items: center; justify-content: center; gap: 12px;
+            background: rgba(0, 0, 0, 0.4); padding: 8px 14px; border-radius: 10px;
+            border: 1px solid var(--card-border);
+        }
+        .play-btn { background: none; border: none; color: white; font-size: 16px; cursor: none; transition: transform 0.1s;}
+        .play-btn:active { transform: scale(0.9); }
+        .song-title { font-size: 12px; opacity: 0.8; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* glitch name */
-  .name.glitch #name{position:relative;animation:glitchTxt 2.6s infinite}
-  @keyframes glitchTxt{0%,92%,100%{text-shadow:none;transform:none}
-    93%{text-shadow:2px 0 var(--accent2),-2px 0 var(--accent);transform:translateX(1px)}
-    95%{text-shadow:-2px 0 var(--accent2),2px 0 var(--accent);transform:translateX(-1px)}
-    97%{text-shadow:2px 0 #ff4d6d,-2px 0 #00e0ff;transform:translateX(1px)}}
+        /* --- Settings Dashboard --- */
+        #settings-panel {
+            position: fixed; top: 20px; left: 20px; bottom: 20px;
+            background: rgba(8, 8, 8, 0.96); border: 1px solid #252525;
+            padding: 16px; border-radius: 12px; width: 330px;
+            display: none; flex-direction: column; z-index: 100000; cursor: default;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+        }
+        #settings-scroll {
+            overflow-y: auto; overflow-x: hidden; flex: 1; padding-right: 6px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        #settings-scroll::-webkit-scrollbar { width: 4px; }
+        #settings-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
-  /* tilt glare */
-  .glare{position:absolute;inset:0;border-radius:var(--radius);pointer-events:none;opacity:0;
-    background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.28),transparent 45%);
-    transition:opacity .2s;mix-blend-mode:overlay}
-  .card:hover .glare{opacity:1}
+        .set-group { border-bottom: 1px solid #1a1a1a; padding-bottom: 8px; display: flex; flex-direction: column; gap: 5px; }
+        .set-group-title { font-size: 11px; text-transform: uppercase; color: var(--theme-color); font-weight: bold; letter-spacing: 1px; }
+        
+        .set-row { display: flex; justify-content: space-between; align-items: center; }
+        .set-row label { font-size: 11px; color: #bbb; }
+        .set-row input[type="text"], .set-row input[type="number"], .set-row select {
+            background: #121212; border: 1px solid #2a2a2a; color: #fff;
+            padding: 4px 6px; border-radius: 4px; font-family: inherit; font-size: 11px; width: 140px;
+        }
+        .set-row input[type="range"] { width: 110px; }
+        .set-row input[type="color"] { background: none; border: none; width: 30px; height: 24px; cursor: pointer; }
 
-  /* widgets */
-  .widgets{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-  .widget{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:12px;font-size:12px;
-    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted)}
-  .widget b{color:#fff;font-weight:700}
-  .dc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-  .dc-online{background:#3ba55d;box-shadow:0 0 8px #3ba55d}.dc-idle{background:#faa61a}
-  .dc-dnd{background:#ed4245}.dc-offline{background:#747f8d}
+        .btn-stack { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+        .btn-stack button { background: #fff; color: #000; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; }
+        .btn-stack button:hover { background: #ddd; }
+        .btn-stack button.secondary { background: #1c1c1c; color: #fff; border: 1px solid #333; }
+        .btn-stack button.secondary:hover { background: #2a2a2a; }
 
-  /* toast */
-  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);z-index:120;
-    background:rgba(20,20,32,.95);border:1px solid rgba(255,255,255,.15);padding:12px 20px;border-radius:12px;
-    font-size:13px;opacity:0;transition:.3s;pointer-events:none;max-width:80vw;text-align:center}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-</style>
+        .hint { position: fixed; top: 10px; left: 10px; font-size: 11px; opacity: 0.35; z-index: 10; pointer-events: none; }
+    </style>
 </head>
 <body>
 
-<video id="bg-video" autoplay muted loop playsinline></video>
-<div id="bg-image"></div>
-<canvas id="particles"></canvas>
-<div id="bg-overlay"></div>
-<canvas id="viz"></canvas>
-<canvas id="fx"></canvas>
+    <canvas id="bg-canvas"></canvas>
 
-<!-- cursor -->
-<div class="cur-ring" id="cur-ring"></div>
-<div class="cur-dot" id="cur-dot"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-trail" id="cursor-trail"></div>
 
-<!-- gate -->
-<div id="gate"><div><h2 id="gate-text">войти</h2><p>click anywhere</p></div></div>
-
-<!-- card -->
-<div class="tilt"><main class="card neon" id="card">
-  <div class="layer">
-    <div class="avatar-wrap">
-      <div class="avatar-ring"></div>
-      <img class="avatar" id="avatar" src="" alt="">
-      <span class="status-dot" id="status-dot"></span>
+    <div id="enter-screen" onclick="enterSite()">
+        <span id="enter-text">[ Click to enter ]</span>
     </div>
-    <div class="name" id="name-wrap">
-      <span id="name">username</span>
-      <svg class="verified" id="verified" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 1.8 3 .2.9 2.9 2.2 2-1 2.9 1 2.9-2.2 2-.9 2.9-3 .2L12 22l-2.4-1.8-3-.2-.9-2.9-2.2-2 1-2.9-1-2.9 2.2-2 .9-2.9 3-.2z"/><path d="M10.5 13.5l-2-2L7 13l3.5 3.5L17 10l-1.5-1.5z" fill="#0a0a14"/></svg>
+
+    <div class="hint">Двойной клик по пустому месту — настройки</div>
+    <div class="crt-overlay" id="crt-overlay"></div>
+    <div class="vignette" id="vignette"></div>
+    <audio id="bg-audio" loop></audio>
+
+    <div class="container" id="container">
+        <div class="card" id="card">
+            <div class="avatar-box">
+                <img id="avatar" src="" alt="Avatar" class="avatar">
+                <div class="status-dot" id="discord-status-dot"></div>
+            </div>
+            
+            <h1 id="nickname">Loading...</h1>
+            <div class="bio" id="bio-text"></div>
+            
+            <div class="discord-status-badge" id="discord-activity-badge">
+                <span id="discord-activity-text"></span>
+            </div>
+
+            <div class="links">
+                <a id="link-tg" href="#" target="_blank">Telegram</a>
+                <a id="link-ds" href="#" target="_blank">Discord</a>
+            </div>
+            
+            <div class="player">
+                <button class="play-btn" id="play-pause">⏸</button>
+                <div class="song-title" id="song-title">Loading...</div>
+            </div>
+        </div>
     </div>
-    <p class="typed"><span id="typed-text"></span><span class="caret" id="caret"></span></p>
-    <div class="badges" id="badges"></div>
-    <div class="widgets" id="widgets"></div>
-    <div class="stats" id="stats"></div>
-    <div class="socials" id="socials"></div>
-    <a class="blog-btn" id="blog-btn" style="display:none" target="_self"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span id="blog-label">Блог</span></a>
-    <div class="player" id="player">
-      <img class="cover" id="cover" src="" alt="">
-      <div class="track-info">
-        <div class="track-title" id="track-title">—</div>
-        <div class="track-artist" id="track-artist">—</div>
-        <div class="progress" id="progress"><div class="progress-fill" id="progress-fill"></div></div>
-      </div>
-      <button class="play-btn" id="play-btn"></button>
+
+    <div id="settings-panel">
+        <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 4px;">Параметры Визитки</div>
+        <div id="settings-scroll">
+            <div class="set-group">
+                <div class="set-group-title">Профиль</div>
+                <div class="set-row"><label>Никнейм</label><input type="text" id="set-nickname"></div>
+                <div class="set-row"><label>Glitch Ника при наведении</label><select id="set-glitch"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+                <div class="set-row"><label>Текст био</label><input type="text" id="set-bio"></div>
+                <div class="set-row"><label>Скорость печати (мс)</label><input type="number" id="set-typespeed" min="10" max="300"></div>
+                <div class="set-row"><label>URL Аватарки</label><input type="text" id="set-avatar"></div>
+                <div class="set-row"><label>Бегущий заголовок (Вкладка)</label><select id="set-scrolltitle"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+            </div>
+            <div class="set-group">
+                <div class="set-group-title">Цвет и Эффекты (Chroma)</div>
+                <div class="set-row"><label>Акцентный цвет</label><input type="color" id="set-color"></div>
+                <div class="set-row"><label>RGB / Chroma Mode</label><select id="set-chroma"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+                <div class="set-row"><label>Сила свечения (px)</label><input type="range" id="set-glow" min="0" max="50"></div>
+                <div class="set-row"><label>Виньетка (Затемнение краев)</label><select id="set-vignette"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+                <div class="set-row"><label>CRT Полосы</label><select id="set-crt"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+                <div class="set-row"><label>Искры при клике</label><select id="set-sparks"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+            </div>
+            <div class="set-group">
+                <div class="set-group-title">Discord & Lanyard</div>
+                <div class="set-row"><label>Discord ID</label><input type="text" id="set-dsid"></div>
+                <div class="set-row"><label>Точка статуса</label><select id="set-showstatus"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+                <div class="set-row"><label>Плашка активности</label><select id="set-showact"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+            </div>
+            <div class="set-group">
+                <div class="set-group-title">Ссылки и Аудио</div>
+                <div class="set-row"><label>Telegram URL</label><input type="text" id="set-tg"></div>
+                <div class="set-row"><label>Discord URL</label><input type="text" id="set-ds"></div>
+                <div class="set-row"><label>Аудио URL</label><input type="text" id="set-audio"></div>
+                <div class="set-row"><label>Название трека</label><input type="text" id="set-song"></div>
+                <div class="set-row"><label>Громкость</label><input type="range" id="set-volume" min="0" max="1" step="0.05"></div>
+            </div>
+            <div class="set-group">
+                <div class="set-group-title">Стекло Карточки</div>
+                <div class="set-row"><label>Цвет карты</label><input type="color" id="set-cardbg"></div>
+                <div class="set-row"><label>Прозрачность</label><input type="range" id="set-cardop" min="0.05" max="1" step="0.05"></div>
+                <div class="set-row"><label>Размытие (blur)</label><input type="range" id="set-cardblur" min="0" max="40"></div>
+            </div>
+            <div class="set-group">
+                <div class="set-group-title">Фон (Canvas)</div>
+                <div class="set-row"><label>Тип фона</label><select id="set-bgtype"><option value="matrix">Матрица</option><option value="particles">Частицы</option><option value="gradient">Градиент</option><option value="void">Тьма</option></select></div>
+                <div class="set-row"><label>Кол-во частиц (Для Particles)</label><input type="number" id="set-pcount" min="10" max="250"></div>
+                <div class="set-row"><label>Шлейф курсора</label><select id="set-trail"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
+            </div>
+        </div>
+        <div class="btn-stack">
+            <button onclick="downloadJson()">СКАЧАТЬ CONFIG.JSON</button>
+            <button class="secondary" onclick="applyPreview()">Применить предпросмотр</button>
+        </div>
     </div>
-    <div class="foot" id="foot">made with ♥</div>
-  </div>
-  <div class="glare" id="glare"></div>
-</main></div>
 
-<audio id="audio" loop></audio>
-<div class="toast" id="toast"></div>
+    <script>
+        let CFG = {};
+        let lanyardWs = null;
+        let typeWriterTimeout, titleInterval;
+        let isPlaying = false;
+        
+        let sparks = []; // Искры при клике
+        let chromaHue = 0; // Для RGB режима
 
-<button class="fab" id="share" title="Поделиться"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></button>
-<button class="fab" id="mute" title="Звук"><svg id="mute-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 010 7"/></svg></button>
-<button class="fab" id="fs" title="Полный экран"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3m13-5v3a2 2 0 01-2 2h-3"/></svg></button>
+        const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2, rawX: window.innerWidth / 2, rawY: window.innerHeight / 2 };
+        const trailPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        const cardRot = { currentX: 0, currentY: 0, targetX: 0, targetY: 0 };
 
-<script>
-/* ================= SOCIAL ICONS ================= */
-const SOCIAL_TYPES={
- discord:{name:'Discord',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0015.4 3l-.2.5a18 18 0 015.6 1.5A17.7 17.7 0 003 5a18 18 0 015.6-1.5L8.4 3A19.8 19.8 0 003.6 4.4C.8 8.6.1 12.6.4 16.6a20 20 0 006 3l.4-.7c-.7-.2-1.3-.5-1.9-.9l.5-.3a13.7 13.7 0 0012 0l.5.3c-.6.4-1.2.7-1.9.9l.4.7a20 20 0 006-3c.4-4.7-.6-8.7-3.5-12.2zM8.5 14.3c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2zm7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2z"/></svg>'},
- telegram:{name:'Telegram',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3l-3.3 15.6c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.2-8.3c.4-.4-.1-.6-.6-.2L6.2 13.6l-4.9-1.5c-1.1-.3-1.1-1 .2-1.5L20.5 3c.9-.3 1.7.2 1.4 1.3z"/></svg>'},
- instagram:{name:'Instagram',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>'},
- youtube:{name:'YouTube',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.5s-.2-1.6-.9-2.3c-.8-.9-1.8-.9-2.2-1C16.8 4 12 4 12 4s-4.8 0-7.9.2c-.4.1-1.4.1-2.2 1C1.2 5.9 1 7.5 1 7.5S.8 9.4.8 11.3v1.4c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.8.9 1.9.8 2.4.9 1.7.2 7.7.2 7.7.2s4.8 0 7.9-.2c.4-.1 1.4-.1 2.2-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-1.4c0-1.9-.2-3.8-.2-3.8zM9.8 15.2V8.8l6.2 3.2z"/></svg>'},
- twitter:{name:'X / Twitter',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.3 8.3L23 22h-6.8l-5.3-6.9L4.8 22H1.7l7.8-8.9L1 2h6.9l4.8 6.3z"/></svg>'},
- github:{name:'GitHub',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 002 12c0 4.4 2.9 8.2 6.8 9.5.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .8.1-.7.3-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 015 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .3.3.6.9.6 1.9v2.8c0 .3.2.6.7.5A10 10 0 0012 2z"/></svg>'},
- tiktok:{name:'TikTok',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 8.3a6.9 6.9 0 01-4.4-1.6v7.6a5.7 5.7 0 11-5.7-5.7c.3 0 .6 0 .9.1v2.9a2.8 2.8 0 00-.9-.2 2.8 2.8 0 102.8 2.8V2h2.8a4 4 0 004.5 3.5z"/></svg>'},
- spotify:{name:'Spotify',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.6 14.4c-.2.3-.6.4-.9.2-2.4-1.5-5.4-1.8-9-1-.4.1-.7-.2-.8-.5-.1-.4.2-.7.5-.8 3.9-.9 7.3-.5 10 1.1.3.2.4.6.2.8zm1.2-2.7c-.2.4-.7.5-1.1.3-2.7-1.7-6.9-2.2-10.1-1.2-.4.1-.9-.1-1-.6-.1-.4.1-.9.6-1 3.7-1.1 8.3-.6 11.4 1.3.3.2.5.8.2 1.2zm.1-2.8C14.6 8.9 9.3 8.7 6.2 9.7c-.5.2-1.1-.1-1.3-.6-.2-.5.1-1.1.6-1.3 3.6-1.1 9.4-.9 13.1 1.3.5.3.6.9.4 1.4z"/></svg>'},
- twitch:{name:'Twitch',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 2L3 6v14h5v3h3l3-3h4l5-5V2H4zm16 11l-3 3h-4l-3 3v-3H6V4h14v9zM16 7h-2v5h2V7zm-5 0H9v5h2V7z"/></svg>'},
- vk:{name:'ВКонтакте',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 17c-6 0-9.7-4.1-9.8-11h3c.1 5 2.3 7.1 4 7.5V6h2.8v4.3c1.7-.2 3.5-2.1 4.1-4.3h2.8c-.5 2.7-2.4 4.6-3.7 5.4 1.3.6 3.5 2.3 4.3 5.6h-3.1c-.6-2-2.2-3.5-4.4-3.8V17H13z"/></svg>'},
- steam:{name:'Steam',svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-9.9 8.7l5.4 2.2a2.8 2.8 0 011.6-.5l2.4-3.5v-.05A3.75 3.75 0 1116 12.4l-3.4 2.45a2.8 2.8 0 01-5.55.5l-3.85-1.6A10 10 0 1012 2zm-4.7 15.1l-1.25-.5a2.1 2.1 0 003.9-.35 2.1 2.1 0 00-2.65-2.65l1.3.55a1.55 1.55 0 11-1.3 2.8zM16 12.4a2.5 2.5 0 10-2.5-2.5 2.5 2.5 0 002.5 2.5z"/></svg>'},
- email:{name:'Email',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>'},
- website:{name:'Сайт',svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20"/></svg>'}
-};
+        async function loadConfig() {
+            try {
+                const response = await fetch('config.json');
+                CFG = response.ok ? await response.json() : getDefaultConfig();
+                applyConfigToPage(CFG);
+                fillSettingsPanel(CFG);
+            } catch (e) { console.error(e); }
+        }
 
-/* ================= DEFAULTS (fallback, если JSON не прочитался) ================= */
-const DEFAULTS={
- name:'username',rgbName:false,glitch:false,clock:false,discord:'',
- typed:'добро пожаловать | full-stack dev',
- avatar:'https://api.dicebear.com/9.x/glass/svg?seed=Neo',
- verified:true,status:true,showStats:true,
- blog:'',blogLabel:'Блог',
- badges:'Developer, Gamer',foot:'made with ♥',
- cursor:true,trail:true,tilt:true,neon:true,viz:true,vizstyle:'radial',parallax:true,confetti:true,clickSound:false,
- particles:'network',pcount:80,pspeed:6,
- accent:'#7c5cff',accent2:'#00e0ff',cardop:50,blur:18,glow:22,
- bgtype:'video',bgurl:'',overlay:60,
- music:'',autoplay:true,track:'—',artist:'—',cover:'https://api.dicebear.com/9.x/shapes/svg?seed=x',volume:60,
- socials:[{type:'discord',url:'https://discord.com/'},{type:'telegram',url:'https://t.me/'},{type:'github',url:'https://github.com/'}]
-};
-let S=structuredClone(DEFAULTS);
+        function hexToRgba(hex, alpha) {
+            let c = hex.replace('#', '');
+            if (c.length === 3) c = c.split('').map(x => x + x).join('');
+            const num = parseInt(c, 16);
+            return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
+        }
 
-/* Определяем слабое устройство/мобилку — снижаем нагрузку (частицы, блюр) */
-const LOWPERF=matchMedia('(prefers-reduced-motion:reduce)').matches||matchMedia('(max-width:768px)').matches;
+        function applyConfigToPage(c) {
+            CFG = c;
+            
+            // Настройка заголовка вкладки
+            clearInterval(titleInterval);
+            let titleText = `Bio | ${c.nickname || "User"} | `;
+            if (c.scrollingTitle) {
+                titleInterval = setInterval(() => {
+                    titleText = titleText.substring(1) + titleText[0];
+                    document.title = titleText;
+                }, 300);
+            } else { document.title = `Bio | ${c.nickname || "User"}`; }
 
-const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const hexRgba=(h,a)=>{const n=parseInt(h.slice(1),16);return`rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
-const audio=$('audio');
+            const nickEl = document.getElementById('nickname');
+            nickEl.innerText = c.nickname || "";
+            if (c.glitchName) nickEl.classList.add('glitch');
+            else nickEl.classList.remove('glitch');
 
-/* ================= STATS (счётчик просмотров/лайков) ================= */
+            document.getElementById('avatar').src = c.avatar || "";
+            document.getElementById('song-title').innerText = c.songTitle || "";
+            document.getElementById('enter-text').innerText = c.enterScreenText || "[ Click to enter ]";
+            document.getElementById('link-tg').href = c.telegram || "#";
+            document.getElementById('link-ds').href = c.discord || "#";
 
-/* ================= RENDER ================= */
-function render(){
- const r=document.documentElement.style;
- r.setProperty('--accent',S.accent);r.setProperty('--accent2',S.accent2);
- r.setProperty('--overlay',S.overlay/100);r.setProperty('--card-bg',hexRgba('#0c0c16',S.cardop/100));
- r.setProperty('--card-blur',(LOWPERF?Math.min(S.blur,8):S.blur)+'px');r.setProperty('--glow',S.glow+'px');
+            const root = document.documentElement;
+            root.style.setProperty('--theme-color', c.themeColor || '#00ffcc');
+            root.style.setProperty('--glow-strength', (c.glowStrength || 20) + 'px');
+            root.style.setProperty('--card-bg', hexToRgba(c.cardBgColor || '#0a0a0a', c.cardOpacity ?? 0.6));
+            root.style.setProperty('--card-blur', (c.cardBlur ?? 16) + 'px');
+            root.style.setProperty('--card-radius', (c.cardRadius ?? 20) + 'px');
+            root.style.setProperty('--card-border', `rgba(255, 255, 255, ${c.cardBorderOpacity ?? 0.15})`);
 
- $('name').textContent=S.name;
- $('name-wrap').classList.toggle('rgb',S.rgbName);
- $('name-wrap').classList.toggle('glitch',S.glitch);
- if(S.avatar)$('avatar').src=S.avatar;
- $('foot').textContent=S.foot;
- setFavicon(S.avatar);
- $('verified').style.display=S.verified?'':'none';
- $('status-dot').style.display=S.status?'':'none';
- $('card').classList.toggle('neon',S.neon);
- document.body.classList.toggle('native-cursor',!S.cursor);
- $('cur-dot').style.display=S.cursor?'':'none';$('cur-ring').style.display=S.cursor?'':'none';
+            document.getElementById('crt-overlay').style.display = c.crtEffect ? 'block' : 'none';
+            document.getElementById('vignette').style.display = c.vignette ? 'block' : 'none';
+            document.getElementById('cursor-trail').style.display = c.enableCursorTrail ? 'block' : 'none';
 
- $('badges').innerHTML=String(S.badges||'').split(',').map(b=>b.trim()).filter(Boolean)
-   .map(b=>`<span class="badge">${esc(b)}</span>`).join('');
- $('stats').style.display='none';
+            const audio = document.getElementById('bg-audio');
+            audio.volume = c.audioVolume ?? 0.5;
+            if (audio.src !== c.audioUrl && c.audioUrl) { audio.src = c.audioUrl; audio.load(); }
 
- $('socials').innerHTML=(S.socials||[]).filter(s=>s.url).map(s=>{
-   const t=SOCIAL_TYPES[s.type]||SOCIAL_TYPES.website;let h=s.url;
-   if(s.type==='email'&&!h.startsWith('mailto:'))h='mailto:'+h;
-   return`<a class="social" href="${esc(h)}" target="_blank" rel="noopener" title="${t.name}">${t.svg}</a>`}).join('');
+            document.getElementById('discord-status-dot').style.display = c.showDiscordStatus ? 'block' : 'none';
+            if (c.discordId) connectLanyard(c.discordId);
 
- const bb=$('blog-btn');
- if(S.blog){bb.href=S.blog;bb.style.display='';$('blog-label').textContent=S.blogLabel||'Блог'}
- else bb.style.display='none';
+            startTypewriter(c.bioText || "", c.typewriterSpeed || 70);
+            initBackground();
+        }
 
- const vid=$('bg-video'),img=$('bg-image');
- if(S.bgtype==='video'){vid.style.display='';img.style.display='none';if(S.bgurl&&vid.src!==S.bgurl){vid.src=S.bgurl;vid.load()}}
- else if(S.bgtype==='image'){vid.style.display='none';img.style.display='block';img.style.backgroundImage=`url("${S.bgurl}")`}
- else{vid.style.display='none';img.style.display='none'}
+        function startTypewriter(text, speed) {
+            clearTimeout(typeWriterTimeout);
+            const el = document.getElementById('bio-text');
+            el.innerHTML = '';
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    el.innerHTML += text.charAt(i);
+                    i++;
+                    typeWriterTimeout = setTimeout(type, speed);
+                }
+            }
+            type();
+        }
 
- $('track-title').textContent=S.track;$('track-artist').textContent=S.artist;if(S.cover)$('cover').src=S.cover;
- audio.volume=(S.volume||0)/100;if(S.music&&audio.src!==S.music)audio.src=S.music;
- renderWidgets();
- initParticles();startTyping();
-}
+        // --- Фон Canvas (Частицы + Матрица) ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let matrixDrops = [];
+        const matrixChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*".split("");
+        const matrixFontSize = 14;
 
-/* ================= WIDGETS (clock + discord) ================= */
-let clockTimer,discordTimer;
-function renderWidgets(){
- const w=$('widgets');let html='';
- if(S.clock)html+=`<div class="widget" id="w-clock">🕐 <b id="clock-time">--:--:--</b></div>`;
- if(S.discord)html+=`<div class="widget" id="w-discord"><span class="dc-dot dc-offline" id="dc-dot"></span><span id="dc-text">Discord…</span></div>`;
- w.innerHTML=html;w.style.display=html?'flex':'none';
- clearInterval(clockTimer);
- if(S.clock){const upd=()=>{const el=$('clock-time');if(el)el.textContent=new Date().toLocaleTimeString('ru')};upd();clockTimer=setInterval(upd,1000)}
- clearInterval(discordTimer);
- if(S.discord){fetchDiscord();discordTimer=setInterval(fetchDiscord,30000)}
-}
-function fetchDiscord(){
- fetch('https://api.lanyard.rest/v1/users/'+encodeURIComponent(S.discord))
-  .then(r=>r.json()).then(d=>{
-    if(!d.success)throw 0;const u=d.data,st=u.discord_status||'offline';
-    const dot=$('dc-dot'),txt=$('dc-text');if(!dot)return;
-    dot.className='dc-dot dc-'+st;
-    const names={online:'В сети',idle:'Не активен',dnd:'Не беспокоить',offline:'Не в сети'};
-    let label=names[st]||st;
-    const act=(u.activities||[]).find(a=>a.type===0);
-    if(u.listening_to_spotify&&u.spotify)label='🎧 '+u.spotify.song+' — '+u.spotify.artist;
-    else if(act)label='🎮 '+act.name;
-    txt.innerHTML=`<b>${esc(u.discord_user?.username||'Discord')}</b> · ${esc(label)}`;
-  }).catch(()=>{const txt=$('dc-text');if(txt)txt.textContent='Discord: не найден'});
-}
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if(CFG.bgType === 'matrix') initBackground(); // перерасчет колонок
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-/* ================= FAVICON ================= */
-function setFavicon(url){if(!url)return;let l=document.querySelector("link[rel~='icon']");
- if(!l){l=document.createElement('link');l.rel='icon';document.head.appendChild(l)}l.href=url}
+        function initBackground() {
+            particles = [];
+            matrixDrops = [];
+            if (CFG.bgType === 'particles') {
+                const count = CFG.particleCount || 60;
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                        r: Math.random() * 1.8 + 0.6,
+                        vx: (Math.random() - 0.5) * (CFG.particleSpeed || 0.6),
+                        vy: (Math.random() - 0.5) * (CFG.particleSpeed || 0.6),
+                        alpha: Math.random() * 0.7 + 0.2
+                    });
+                }
+            } else if (CFG.bgType === 'matrix') {
+                const columns = canvas.width / matrixFontSize;
+                for(let x = 0; x < columns; x++) matrixDrops[x] = 1;
+            }
+        }
 
-/* ================= TYPING ================= */
-let typeTimer,typedIdx=0,charIdx=0,deleting=false;
-function startTyping(){
- clearTimeout(typeTimer);
- const lines=String(S.typed||'').split('|').map(s=>s.trim()).filter(Boolean);
- if(!lines.length){$('typed-text').textContent='';return}
- typedIdx%=lines.length;
- (function tick(){
-   const full=lines[typedIdx];
-   if(!deleting){charIdx++;if(charIdx>full.length){deleting=true;typeTimer=setTimeout(tick,1400);return}}
-   else{charIdx--;if(charIdx<0){deleting=false;typedIdx=(typedIdx+1)%lines.length;charIdx=0}}
-   $('typed-text').textContent=full.slice(0,Math.max(0,charIdx));
-   typeTimer=setTimeout(tick,deleting?45:85);
- })();
-}
+        function renderCanvas() {
+            // Текущий цвет темы (с учетом Chroma Mode)
+            const currentColor = CFG.chromaMode ? `hsl(${chromaHue}, 100%, 50%)` : (CFG.themeColor || '#00ffcc');
 
-/* ================= PARTICLES ================= */
-const pcanvas=$('particles'),pctx=pcanvas.getContext('2d');let parts=[],praf,mcols=[];
-function resizeP(){pcanvas.width=innerWidth;pcanvas.height=innerHeight}
-addEventListener('resize',resizeP);resizeP();
-function initParticles(){
- cancelAnimationFrame(praf);parts=[];let n=S.pcount;if(LOWPERF)n=Math.min(n,30);const t=S.particles,sp=S.pspeed/6;
- if(t==='none'){pctx.clearRect(0,0,pcanvas.width,pcanvas.height);return}
- if(t==='matrix'){mcols=[];const cols=Math.floor(pcanvas.width/14);for(let i=0;i<cols;i++)mcols[i]=Math.random()*pcanvas.height;loopMatrix();return}
- if(t==='aurora'){auroraT=0;loopAurora();return}
- for(let i=0;i<n;i++)parts.push(newPart(t,sp));
- loopParticles(t,sp);
-}
-let auroraT=0;
-function loopAurora(){
- const w=pcanvas.width,h=pcanvas.height;pctx.clearRect(0,0,w,h);auroraT+=.005*(S.pspeed/6);
- for(let b=0;b<3;b++){
-   const col=b%2?S.accent2:S.accent,yBase=h*.25+b*h*.13;
-   pctx.beginPath();pctx.moveTo(0,h);
-   for(let x=0;x<=w;x+=20){const y=yBase+Math.sin(x*.004+auroraT*3+b)*40+Math.sin(x*.011+auroraT*2)*25;pctx.lineTo(x,y)}
-   pctx.lineTo(w,h);pctx.closePath();
-   const g=pctx.createLinearGradient(0,yBase-60,0,h);
-   g.addColorStop(0,hexRgba(col,.28));g.addColorStop(.5,hexRgba(col,.08));g.addColorStop(1,'rgba(0,0,0,0)');
-   pctx.fillStyle=g;pctx.fill();
- }
- praf=requestAnimationFrame(loopAurora);
-}
-function newPart(t,sp){
- const w=pcanvas.width,h=pcanvas.height;
- return{x:Math.random()*w,y:Math.random()*h,
-   vx:t==='rain'?sp*.6:(Math.random()-.5)*sp,
-   vy:t==='snow'||t==='bubbles'?Math.random()*sp+.3:t==='rain'?Math.random()*8+9:(Math.random()-.5)*sp,
-   r:t==='bubbles'?Math.random()*8+3:t==='stars'?Math.random()*1.6+.4:Math.random()*2.5+.8,
-   len:Math.random()*14+8,a:Math.random()*.6+.3,tw:Math.random()*Math.PI*2}
-}
-function loopParticles(t,sp){
- const w=pcanvas.width,h=pcanvas.height;pctx.clearRect(0,0,w,h);
- const c1=S.accent,c2=S.accent2;
- for(const p of parts){
-   p.x+=p.vx;p.y+=(t==='bubbles')?-Math.abs(p.vy):p.vy;p.tw+=.05;
-   if(p.x<0)p.x=w;if(p.x>w)p.x=0;
-   if(t==='bubbles'){if(p.y<-10){p.y=h+10;p.x=Math.random()*w}}
-   else if(t==='snow'){if(p.y>h){p.y=-5;p.x=Math.random()*w}}
-   else{if(p.y<0)p.y=h;if(p.y>h)p.y=0}
-   if(t==='rain'){
-     pctx.strokeStyle=hexRgba(c2,p.a*.6);pctx.lineWidth=1.4;pctx.lineCap='round';
-     pctx.beginPath();pctx.moveTo(p.x,p.y);pctx.lineTo(p.x-p.vx*1.5,p.y-p.len);pctx.stroke();
-     continue;
-   }
-   let alpha=p.a;if(t==='stars'||t==='fireflies')alpha=p.a*(0.5+0.5*Math.sin(p.tw));
-   pctx.beginPath();pctx.arc(p.x,p.y,p.r,0,7);
-   pctx.fillStyle=t==='fireflies'?hexRgba(c2,alpha):hexRgba('#ffffff',t==='snow'?alpha:alpha*.9);
-   if(t==='fireflies'){pctx.shadowBlur=12;pctx.shadowColor=c2}else pctx.shadowBlur=0;
-   pctx.fill();
- }
- pctx.shadowBlur=0;
- if(t==='network'){
-   for(let i=0;i<parts.length;i++)for(let j=i+1;j<parts.length;j++){
-     const a=parts[i],b=parts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
-     if(d<120){pctx.strokeStyle=hexRgba(c1,(1-d/120)*.4);pctx.lineWidth=1;
-       pctx.beginPath();pctx.moveTo(a.x,a.y);pctx.lineTo(b.x,b.y);pctx.stroke()}
-   }
-   for(const a of parts){const d=Math.hypot(a.x-mouse.x,a.y-mouse.y);
-     if(d<160){pctx.strokeStyle=hexRgba(c2,(1-d/160)*.5);pctx.beginPath();pctx.moveTo(a.x,a.y);pctx.lineTo(mouse.x,mouse.y);pctx.stroke()}}
- }
- praf=requestAnimationFrame(()=>loopParticles(t,sp));
-}
-function loopMatrix(){
- const w=pcanvas.width,h=pcanvas.height;
- pctx.fillStyle='rgba(5,5,12,.08)';pctx.fillRect(0,0,w,h);
- pctx.fillStyle=S.accent2;pctx.font='14px monospace';
- const chars='ｱｲｳ01アカサ<>*+=$#';
- for(let i=0;i<mcols.length;i++){
-   const ch=chars[Math.floor(Math.random()*chars.length)];
-   pctx.fillText(ch,i*14,mcols[i]);
-   if(mcols[i]>h&&Math.random()>.975)mcols[i]=0;mcols[i]+=14*(S.pspeed/6);
- }
- praf=requestAnimationFrame(loopMatrix);
-}
+            if (CFG.bgType === 'matrix') {
+                ctx.fillStyle = "rgba(5, 5, 5, 0.05)"; // След матрицы
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = currentColor;
+                ctx.font = matrixFontSize + "px monospace";
+                
+                for(let i = 0; i < matrixDrops.length; i++) {
+                    const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                    ctx.fillText(text, i * matrixFontSize, matrixDrops[i] * matrixFontSize);
+                    if(matrixDrops[i] * matrixFontSize > canvas.height && Math.random() > 0.975) matrixDrops[i] = 0;
+                    matrixDrops[i]++;
+                }
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (CFG.bgType === 'gradient') {
+                    const grad = ctx.createRadialGradient(mouse.x, mouse.y, 10, mouse.x, mouse.y, canvas.width * 0.7);
+                    grad.addColorStop(0, hexToRgba(currentColor, 0.12));
+                    grad.addColorStop(1, '#050505');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                } else if (CFG.bgType === 'particles') {
+                    ctx.fillStyle = '#050505';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < particles.length; i++) {
+                        const p = particles[i];
+                        p.x += p.vx; p.y += p.vy;
+                        if (p.x < 0) p.x = canvas.width;
+                        if (p.x > canvas.width) p.x = 0;
+                        if (p.y < 0) p.y = canvas.height;
+                        if (p.y > canvas.height) p.y = 0;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                        ctx.fillStyle = hexToRgba(currentColor, p.alpha);
+                        ctx.fill();
+                    }
+                } else {
+                    ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            }
 
-/* ================= AUDIO VISUALIZER ================= */
-const vcanvas=$('viz'),vctx=vcanvas.getContext('2d');let analyser,vdata,vsrc,vraf,actx;
-function resizeV(){vcanvas.width=innerWidth;vcanvas.height=innerHeight}addEventListener('resize',resizeV);resizeV();
-function setupViz(){
- if(analyser)return;
- try{actx=new(window.AudioContext||window.webkitAudioContext)();
-   vsrc=actx.createMediaElementSource(audio);analyser=actx.createAnalyser();
-   analyser.fftSize=128;vsrc.connect(analyser);analyser.connect(actx.destination);
-   vdata=new Uint8Array(analyser.frequencyBinCount);drawViz();
- }catch(e){console.warn('viz off',e)}
-}
-function drawViz(){
- vraf=requestAnimationFrame(drawViz);
- if(!analyser)return;
- vctx.clearRect(0,0,vcanvas.width,vcanvas.height);
- if(!S.viz)return;
- analyser.getByteFrequencyData(vdata);
- const W=vcanvas.width,H=vcanvas.height,n=vdata.length;vctx.lineCap='round';
- if(S.vizstyle==='bars'){
-   const bw=W/n;
-   for(let i=0;i<n;i++){const v=vdata[i]/255,h=v*H*.35;
-     const g=vctx.createLinearGradient(0,H,0,H-h);g.addColorStop(0,hexRgba(S.accent,.7));g.addColorStop(1,hexRgba(S.accent2,.9));
-     vctx.fillStyle=g;vctx.fillRect(i*bw+1,H-h,bw-2,h)}
- }else if(S.vizstyle==='wave'){
-   vctx.beginPath();vctx.moveTo(0,H/2);
-   for(let i=0;i<n;i++){const v=vdata[i]/255,x=i/n*W,y=H/2-(v-.2)*H*.4;vctx.lineTo(x,y)}
-   vctx.strokeStyle=hexRgba(S.accent2,.7);vctx.lineWidth=3;vctx.stroke();
-   vctx.beginPath();vctx.moveTo(0,H/2);
-   for(let i=0;i<n;i++){const v=vdata[i]/255,x=i/n*W,y=H/2+(v-.2)*H*.4;vctx.lineTo(x,y)}
-   vctx.strokeStyle=hexRgba(S.accent,.5);vctx.stroke();
- }else{
-   const cx=W/2,cy=H/2,base=Math.min(W,H)*.28;
-   for(let i=0;i<n;i++){const v=vdata[i]/255,ang=(i/n)*Math.PI*2-Math.PI/2,len=v*120;
-     const x1=cx+Math.cos(ang)*base,y1=cy+Math.sin(ang)*base;
-     const x2=cx+Math.cos(ang)*(base+len),y2=cy+Math.sin(ang)*(base+len);
-     vctx.strokeStyle=hexRgba(i%2?S.accent2:S.accent,.5+v*.5);vctx.lineWidth=3;
-     vctx.beginPath();vctx.moveTo(x1,y1);vctx.lineTo(x2,y2);vctx.stroke()}
- }
-}
+            // Рендер искр клика
+            if (sparks.length > 0) {
+                for(let i = sparks.length - 1; i >= 0; i--) {
+                    const s = sparks[i];
+                    s.x += s.vx; s.y += s.vy; s.life -= 0.02;
+                    if(s.life <= 0) { sparks.splice(i, 1); continue; }
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = hexToRgba(s.color, s.life);
+                    ctx.fill();
+                }
+            }
+        }
 
-/* ================= POINTER (cursor, trail, tilt, glare, parallax — единый rAF) =================
-   Раньше на каждое движение мыши срабатывали 4 отдельных слушателя, каждый писал в DOM
-   без троттлинга (перерисовка backdrop-filter карточки + масштабирование фонового видео).
-   Теперь mousemove только запоминает позицию, а вся тяжёлая работа идёт максимум раз в кадр. */
-const mouse={x:innerWidth/2,y:innerHeight/2};let rx=mouse.x,ry=mouse.y,pointerDirty=true;
-const dot=$('cur-dot'),ring=$('cur-ring'),card=$('card');
-const bgVideoEl=$('bg-video'),bgImageEl=$('bg-image');
-addEventListener('mousemove',e=>{
- mouse.x=e.clientX;mouse.y=e.clientY;pointerDirty=true;
- if(S.cursor)dot.style.transform=`translate(${e.clientX}px,${e.clientY}px) translate(-50%,-50%)`;
- if(S.trail&&Math.random()>.6)spawnTrail(e.clientX,e.clientY);
-},{passive:true});
-document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.social'))ring.classList.add('hover');else ring.classList.remove('hover')},{passive:true});
-function pointerLoop(){
- requestAnimationFrame(pointerLoop);
- rx+=(mouse.x-rx)*.18;ry+=(mouse.y-ry)*.18;
- ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;
- if(!pointerDirty)return;pointerDirty=false;               // тяжёлые записи — только если мышь двигалась
- const mx=mouse.x,my=mouse.y;
- card.style.transform=S.tilt?`rotateX(${(my/innerHeight-.5)*-12}deg) rotateY(${(mx/innerWidth-.5)*12}deg)`:'';
- const r=card.getBoundingClientRect();
- card.style.setProperty('--gx',((mx-r.left)/r.width*100)+'%');
- card.style.setProperty('--gy',((my-r.top)/r.height*100)+'%');
- if(S.parallax){const tf=`scale(1.08) translate(${-(mx/innerWidth-.5)*22}px,${-(my/innerHeight-.5)*22}px)`;
-   bgVideoEl.style.transform=tf;bgImageEl.style.transform=tf}
-}
-pointerLoop();
+        // --- Искры при клике ---
+        window.addEventListener('click', (e) => {
+            if(!CFG.clickSparks || e.target.closest('#settings-panel') || e.target.closest('#enter-screen')) return;
+            const clickColor = CFG.chromaMode ? `hsl(${chromaHue}, 100%, 50%)` : (CFG.themeColor || '#00ffcc');
+            for(let i=0; i<15; i++) {
+                sparks.push({
+                    x: e.clientX, y: e.clientY,
+                    vx: (Math.random()-0.5)*8, vy: (Math.random()-0.5)*8,
+                    life: 1, color: clickColor
+                });
+            }
+        });
 
-/* ================= FX CANVAS (trail + confetti) ================= */
-const fx=$('fx'),fctx=fx.getContext('2d');let fxp=[],fxNeedsClear=false;
-function resizeF(){fx.width=innerWidth;fx.height=innerHeight}addEventListener('resize',resizeF);resizeF();
-function spawnTrail(x,y){fxp.push({x,y,vx:(Math.random()-.5)*1.5,vy:(Math.random()-.5)*1.5,life:1,r:Math.random()*3+1,type:'t'})}
-function burst(x,y,emojis){
- const cols=[S.accent,S.accent2,'#ffd60a','#ff4d6d','#42e695','#00e0ff'];
- for(let i=0;i<60;i++){const a=Math.random()*Math.PI*2,s=Math.random()*7+2;
-   fxp.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-3,life:1,r:Math.random()*5+2,
-     color:cols[Math.floor(Math.random()*cols.length)],
-     emoji:emojis?emojis[0]:null,type:'c',rot:Math.random()*6,vr:(Math.random()-.5)*.4})}
-}
-function fxLoop(){
- requestAnimationFrame(fxLoop);
- if(!fxp.length){                          // нет частиц — не трогаем canvas каждый кадр
-   if(fxNeedsClear){fctx.clearRect(0,0,fx.width,fx.height);fxNeedsClear=false}
-   return;
- }
- fxNeedsClear=true;
- fctx.clearRect(0,0,fx.width,fx.height);
- for(let i=fxp.length-1;i>=0;i--){const p=fxp[i];
-   p.x+=p.vx;p.y+=p.vy;if(p.type==='c')p.vy+=.15;p.vx*=.99;p.life-=p.type==='t'?.06:.012;
-   if(p.rot!=null)p.rot+=p.vr;
-   if(p.life<=0){fxp.splice(i,1);continue}
-   if(p.emoji){fctx.globalAlpha=Math.max(0,p.life);fctx.font='20px sans-serif';fctx.fillText(p.emoji,p.x,p.y);fctx.globalAlpha=1;continue}
-   fctx.globalAlpha=Math.max(0,p.life);
-   fctx.fillStyle=p.color||S.accent2;
-   if(p.type==='c'){fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.rot||0);fctx.fillRect(-p.r,-p.r,p.r*2,p.r*2.4);fctx.restore();}
-   else{fctx.beginPath();fctx.arc(p.x,p.y,p.r*p.life,0,7);fctx.fill()}
-   fctx.globalAlpha=1;
- }
-}
-fxLoop();
+        // --- Анимационный цикл ---
+        const dot = document.getElementById('cursor-dot');
+        const trail = document.getElementById('cursor-trail');
+        const card = document.getElementById('card');
 
-/* ================= CLICK SOUND + CONFETTI ================= */
-let sctx;
-function clickBeep(){if(!S.clickSound)return;try{sctx=sctx||new(window.AudioContext||window.webkitAudioContext)();
- const o=sctx.createOscillator(),g=sctx.createGain();o.connect(g);g.connect(sctx.destination);
- o.frequency.value=520+Math.random()*220;o.type='triangle';g.gain.setValueAtTime(.08,sctx.currentTime);
- g.gain.exponentialRampToValueAtTime(.001,sctx.currentTime+.12);o.start();o.stop(sctx.currentTime+.12)}catch(e){}}
-addEventListener('click',e=>{clickBeep();if(S.confetti&&!e.target.closest('.fab'))burst(e.clientX,e.clientY)});
+        window.addEventListener('mousemove', (e) => {
+            mouse.rawX = e.clientX; mouse.rawY = e.clientY;
+            dot.style.transform = `translate3d(${mouse.rawX}px, ${mouse.rawY}px, 0) translate(-50%, -50%)`;
+            const sens = CFG.tiltSensitivity || 25; const maxA = CFG.tiltMaxAngle || 15;
+            let targetY = (window.innerWidth / 2 - mouse.rawX) / sens;
+            let targetX = (mouse.rawY - window.innerHeight / 2) / sens;
+            cardRot.targetX = Math.max(-maxA, Math.min(maxA, targetX));
+            cardRot.targetY = Math.max(-maxA, Math.min(maxA, targetY));
+        }, { passive: true });
 
-/* 3D TILT + GLARE + PARALLAX теперь считаются внутри pointerLoop (см. секцию POINTER) */
+        window.addEventListener('mouseleave', () => { cardRot.targetX = 0; cardRot.targetY = 0; });
 
-/* ================= PLAYER ================= */
-const IP='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-const IPa='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
-$('play-btn').innerHTML=IP;
-function togglePlay(){if(audio.paused){if(!analyser&&S.viz)setupViz();if(actx&&actx.state==='suspended')actx.resume();audio.play().catch(()=>{})}else audio.pause()}
-audio.addEventListener('play',()=>{$('play-btn').innerHTML=IPa;$('cover').classList.add('playing')});
-audio.addEventListener('pause',()=>{$('play-btn').innerHTML=IP;$('cover').classList.remove('playing')});
-audio.addEventListener('timeupdate',()=>{if(audio.duration)$('progress-fill').style.width=(audio.currentTime/audio.duration*100)+'%'});
-$('play-btn').onclick=togglePlay;
-$('progress').onclick=e=>{const r=e.currentTarget.getBoundingClientRect();if(audio.duration)audio.currentTime=(e.clientX-r.left)/r.width*audio.duration};
-let muted=false;$('mute').onclick=()=>{muted=!muted;audio.muted=muted;$('mute-icon').style.opacity=muted?.4:1};
-$('fs').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};
+        function animLoop() {
+            mouse.x += (mouse.rawX - mouse.x) * 0.15;
+            mouse.y += (mouse.rawY - mouse.y) * 0.15;
+            trailPos.x += (mouse.rawX - trailPos.x) * 0.2;
+            trailPos.y += (mouse.rawY - trailPos.y) * 0.2;
+            trail.style.transform = `translate3d(${trailPos.x}px, ${trailPos.y}px, 0) translate(-50%, -50%)`;
 
-/* ================= GATE ================= */
-$('gate').onclick=()=>{$('gate').classList.add('hide');$('gate-text').textContent=S.name;
- if(S.viz)setupViz();if(actx&&actx.state==='suspended')actx.resume();
- if(S.music&&S.autoplay)audio.play().catch(()=>{});
- const v=$('bg-video');if(v&&S.bgtype==='video')v.play().catch(()=>{});
- burst(innerWidth/2,innerHeight/2);};
+            const smooth = CFG.tiltSmoothness || 0.1;
+            cardRot.currentX += (cardRot.targetX - cardRot.currentX) * smooth;
+            cardRot.currentY += (cardRot.targetY - cardRot.currentY) * smooth;
+            card.style.transform = `rotateX(${cardRot.currentX.toFixed(2)}deg) rotateY(${cardRot.currentY.toFixed(2)}deg)`;
 
-/* ================= SHARE ================= */
-function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000)}
-$('share').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);toast('🔗 Ссылка скопирована!')}catch(e){toast('Ваша ссылка: '+location.href)}};
+            // Chroma Mode Логика
+            if (CFG.chromaMode) {
+                chromaHue = (chromaHue + 0.5) % 360;
+                document.documentElement.style.setProperty('--theme-color', `hsl(${chromaHue}, 100%, 50%)`);
+            }
 
-/* ================= KONAMI EASTER EGG ================= */
-const KONAMI=['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
-let ki=0;
-addEventListener('keydown',e=>{if(e.key.toLowerCase()===KONAMI[ki]){if(++ki===KONAMI.length){ki=0;partyMode()}}else ki=0});
-function partyMode(){toast('🎉 PARTY MODE!');let c=0;
- const iv=setInterval(()=>{burst(Math.random()*innerWidth,Math.random()*innerHeight*.6);if(++c>28)clearInterval(iv)},110);
- document.body.animate([{filter:'hue-rotate(0deg)'},{filter:'hue-rotate(360deg)'}],{duration:2200,iterations:3})}
+            renderCanvas();
+            requestAnimationFrame(animLoop);
+        }
+        requestAnimationFrame(animLoop);
 
-/* ================= INIT — данные из bio-settings.json ================= */
-async function boot(){
- try{
-   const res=await fetch('bio-settings.json',{cache:'no-store'});
-   if(res.ok){const data=await res.json();S={...DEFAULTS,...data}}
-   else console.warn('bio-settings.json: HTTP '+res.status);
- }catch(e){
-   console.warn('Не удалось прочитать bio-settings.json:',e.message||e);
-   if(location.protocol==='file:')
-     toast('⚠ JSON не читается при открытии файла напрямую. Захостите сайт или запустите локальный сервер.');
- }
- render();
-}
-boot();
-</script>
+        // --- Lanyard (Discord Status) ---
+        function connectLanyard(userId) {
+            if (lanyardWs) lanyardWs.close();
+            lanyardWs = new WebSocket("wss://api.lanyard.rest/socket");
+            lanyardWs.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.op === 1) {
+                    setInterval(() => lanyardWs.send(JSON.stringify({ op: 3 })), data.d.heartbeat_interval);
+                    lanyardWs.send(JSON.stringify({ op: 2, d: { subscribe_to_id: userId } }));
+                }
+                if (data.t === "INIT_STATE" || data.t === "PRESENCE_UPDATE") updatePresence(data.d);
+            };
+        }
+
+        function updatePresence(d) {
+            const statusColors = { online: "#43b581", idle: "#faa61a", dnd: "#f04747", offline: "#747f8d" };
+            document.getElementById('discord-status-dot').style.backgroundColor = statusColors[d.discord_status] || statusColors.offline;
+            if (!CFG.showDiscordActivity) { document.getElementById('discord-activity-badge').style.display = 'none'; return; }
+
+            let act = null;
+            if (d.listening_to_spotify) act = `🎵 ${d.spotify.song} — ${d.spotify.artist}`;
+            else if (d.activities && d.activities.length > 0) {
+                const main = d.activities.find(a => a.type !== 4);
+                if (main) act = `🎮 ${main.name}${main.details ? ` (${main.details})` : ''}`;
+                else if (d.activities[0].state) act = `💬 ${d.activities[0].state}`;
+            }
+
+            const badge = document.getElementById('discord-activity-badge');
+            if (act) { document.getElementById('discord-activity-text').innerText = act; badge.style.display = 'inline-flex'; }
+            else { badge.style.display = 'none'; }
+        }
+
+        // --- UI Интерактивы ---
+        function enterSite() {
+            const screen = document.getElementById('enter-screen');
+            screen.style.opacity = '0';
+            setTimeout(() => screen.style.display = 'none', 400);
+            document.getElementById('bg-audio').play().catch(() => {});
+            isPlaying = true;
+        }
+
+        const audio = document.getElementById('bg-audio');
+        const playBtn = document.getElementById('play-pause');
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) { audio.pause(); playBtn.innerHTML = '▶'; }
+            else { audio.play(); playBtn.innerHTML = '⏸'; }
+            isPlaying = !isPlaying;
+        });
+
+        // --- Панель Настроек ---
+        function fillSettingsPanel(c) {
+            document.getElementById('set-nickname').value = c.nickname || '';
+            document.getElementById('set-glitch').value = String(c.glitchName !== false);
+            document.getElementById('set-scrolltitle').value = String(c.scrollingTitle !== false);
+            document.getElementById('set-bio').value = c.bioText || '';
+            document.getElementById('set-typespeed').value = c.typewriterSpeed || 70;
+            document.getElementById('set-avatar').value = c.avatar || '';
+            document.getElementById('set-dsid').value = c.discordId || '';
+            document.getElementById('set-showstatus').value = String(c.showDiscordStatus !== false);
+            document.getElementById('set-showact').value = String(c.showDiscordActivity !== false);
+            document.getElementById('set-tg').value = c.telegram || '';
+            document.getElementById('set-ds').value = c.discord || '';
+            document.getElementById('set-audio').value = c.audioUrl || '';
+            document.getElementById('set-song').value = c.songTitle || '';
+            document.getElementById('set-volume').value = c.audioVolume ?? 0.5;
+            document.getElementById('set-color').value = c.themeColor || '#00ffcc';
+            document.getElementById('set-chroma').value = String(c.chromaMode === true);
+            document.getElementById('set-glow').value = c.glowStrength ?? 20;
+            document.getElementById('set-cardbg').value = c.cardBgColor || '#0a0a0a';
+            document.getElementById('set-cardop').value = c.cardOpacity ?? 0.6;
+            document.getElementById('set-cardblur').value = c.cardBlur ?? 16;
+            document.getElementById('set-bgtype').value = c.bgType || 'matrix';
+            document.getElementById('set-pcount').value = c.particleCount || 60;
+            document.getElementById('set-trail').value = String(c.enableCursorTrail !== false);
+            document.getElementById('set-crt').value = String(c.crtEffect === true);
+            document.getElementById('set-vignette').value = String(c.vignette === true);
+            document.getElementById('set-sparks').value = String(c.clickSparks !== false);
+        }
+
+        function extractInputs() {
+            return {
+                nickname: document.getElementById('set-nickname').value,
+                glitchName: document.getElementById('set-glitch').value === "true",
+                scrollingTitle: document.getElementById('set-scrolltitle').value === "true",
+                discordId: document.getElementById('set-dsid').value,
+                showDiscordStatus: document.getElementById('set-showstatus').value === "true",
+                showDiscordActivity: document.getElementById('set-showact').value === "true",
+                bioText: document.getElementById('set-bio').value,
+                typewriterSpeed: parseInt(document.getElementById('set-typespeed').value) || 70,
+                avatar: document.getElementById('set-avatar').value,
+                audioUrl: document.getElementById('set-audio').value,
+                audioVolume: parseFloat(document.getElementById('set-volume').value),
+                songTitle: document.getElementById('set-song').value,
+                telegram: document.getElementById('set-tg').value,
+                discord: document.getElementById('set-ds').value,
+                themeColor: document.getElementById('set-color').value,
+                chromaMode: document.getElementById('set-chroma').value === "true",
+                glowStrength: parseInt(document.getElementById('set-glow').value),
+                cardBgColor: document.getElementById('set-cardbg').value,
+                cardOpacity: parseFloat(document.getElementById('set-cardop').value),
+                cardBlur: parseInt(document.getElementById('set-cardblur').value),
+                bgType: document.getElementById('set-bgtype').value,
+                particleCount: parseInt(document.getElementById('set-pcount').value),
+                enableCursorTrail: document.getElementById('set-trail').value === "true",
+                crtEffect: document.getElementById('set-crt').value === "true",
+                vignette: document.getElementById('set-vignette').value === "true",
+                clickSparks: document.getElementById('set-sparks').value === "true"
+            };
+        }
+
+        function applyPreview() { applyConfigToPage(extractInputs()); }
+
+        function downloadJson() {
+            const data = extractInputs();
+            const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 4));
+            const dl = document.createElement('a');
+            dl.setAttribute("href", str);
+            dl.setAttribute("download", "config.json");
+            document.body.appendChild(dl); dl.click(); dl.remove();
+            applyPreview();
+        }
+
+        document.addEventListener('dblclick', (e) => {
+            if (e.target.closest('.card') || e.target.closest('#settings-panel') || e.target.closest('#enter-screen')) return;
+            const p = document.getElementById('settings-panel');
+            p.style.display = p.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        loadConfig();
+    </script>
 </body>
 </html>
