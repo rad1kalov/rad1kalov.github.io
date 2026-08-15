@@ -156,41 +156,6 @@
         .play-btn { background: none; border: none; color: white; font-size: 16px; cursor: none; transition: transform 0.1s;}
         .play-btn:active { transform: scale(0.9); }
         .song-title { font-size: 12px; opacity: 0.8; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* --- Settings Dashboard --- */
-        #settings-panel {
-            position: fixed; top: 20px; left: 20px; bottom: 20px;
-            background: rgba(8, 8, 8, 0.96); border: 1px solid #252525;
-            padding: 16px; border-radius: 12px; width: 330px;
-            display: none; flex-direction: column; z-index: 100000; cursor: default;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
-        }
-        #settings-scroll {
-            overflow-y: auto; overflow-x: hidden; flex: 1; padding-right: 6px;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        #settings-scroll::-webkit-scrollbar { width: 4px; }
-        #settings-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
-        .set-group { border-bottom: 1px solid #1a1a1a; padding-bottom: 8px; display: flex; flex-direction: column; gap: 5px; }
-        .set-group-title { font-size: 11px; text-transform: uppercase; color: var(--theme-color); font-weight: bold; letter-spacing: 1px; }
-        
-        .set-row { display: flex; justify-content: space-between; align-items: center; }
-        .set-row label { font-size: 11px; color: #bbb; }
-        .set-row input[type="text"], .set-row input[type="number"], .set-row select {
-            background: #121212; border: 1px solid #2a2a2a; color: #fff;
-            padding: 4px 6px; border-radius: 4px; font-family: inherit; font-size: 11px; width: 140px;
-        }
-        .set-row input[type="range"] { width: 110px; }
-        .set-row input[type="color"] { background: none; border: none; width: 30px; height: 24px; cursor: pointer; }
-
-        .btn-stack { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
-        .btn-stack button { background: #fff; color: #000; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; }
-        .btn-stack button:hover { background: #ddd; }
-        .btn-stack button.secondary { background: #1c1c1c; color: #fff; border: 1px solid #333; }
-        .btn-stack button.secondary:hover { background: #2a2a2a; }
-
-        .hint { position: fixed; top: 10px; left: 10px; font-size: 11px; opacity: 0.35; z-index: 10; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -204,7 +169,6 @@
         <span id="enter-text">[ Click to enter ]</span>
     </div>
 
-    <div class="hint">Двойной клик по пустому месту — настройки</div>
     <div class="crt-overlay" id="crt-overlay"></div>
     <div class="vignette" id="vignette"></div>
     <audio id="bg-audio" loop></audio>
@@ -235,68 +199,14 @@
         </div>
     </div>
 
-    <div id="settings-panel">
-        <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 4px;">Параметры Визитки</div>
-        <div id="settings-scroll">
-            <div class="set-group">
-                <div class="set-group-title">Профиль</div>
-                <div class="set-row"><label>Никнейм</label><input type="text" id="set-nickname"></div>
-                <div class="set-row"><label>Glitch Ника при наведении</label><select id="set-glitch"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-                <div class="set-row"><label>Текст био</label><input type="text" id="set-bio"></div>
-                <div class="set-row"><label>Скорость печати (мс)</label><input type="number" id="set-typespeed" min="10" max="300"></div>
-                <div class="set-row"><label>URL Аватарки</label><input type="text" id="set-avatar"></div>
-                <div class="set-row"><label>Бегущий заголовок (Вкладка)</label><select id="set-scrolltitle"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-            </div>
-            <div class="set-group">
-                <div class="set-group-title">Цвет и Эффекты (Chroma)</div>
-                <div class="set-row"><label>Акцентный цвет</label><input type="color" id="set-color"></div>
-                <div class="set-row"><label>RGB / Chroma Mode</label><select id="set-chroma"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-                <div class="set-row"><label>Сила свечения (px)</label><input type="range" id="set-glow" min="0" max="50"></div>
-                <div class="set-row"><label>Виньетка (Затемнение краев)</label><select id="set-vignette"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-                <div class="set-row"><label>CRT Полосы</label><select id="set-crt"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-                <div class="set-row"><label>Искры при клике</label><select id="set-sparks"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-            </div>
-            <div class="set-group">
-                <div class="set-group-title">Discord & Lanyard</div>
-                <div class="set-row"><label>Discord ID</label><input type="text" id="set-dsid"></div>
-                <div class="set-row"><label>Точка статуса</label><select id="set-showstatus"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-                <div class="set-row"><label>Плашка активности</label><select id="set-showact"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-            </div>
-            <div class="set-group">
-                <div class="set-group-title">Ссылки и Аудио</div>
-                <div class="set-row"><label>Telegram URL</label><input type="text" id="set-tg"></div>
-                <div class="set-row"><label>Discord URL</label><input type="text" id="set-ds"></div>
-                <div class="set-row"><label>Аудио URL</label><input type="text" id="set-audio"></div>
-                <div class="set-row"><label>Название трека</label><input type="text" id="set-song"></div>
-                <div class="set-row"><label>Громкость</label><input type="range" id="set-volume" min="0" max="1" step="0.05"></div>
-            </div>
-            <div class="set-group">
-                <div class="set-group-title">Стекло Карточки</div>
-                <div class="set-row"><label>Цвет карты</label><input type="color" id="set-cardbg"></div>
-                <div class="set-row"><label>Прозрачность</label><input type="range" id="set-cardop" min="0.05" max="1" step="0.05"></div>
-                <div class="set-row"><label>Размытие (blur)</label><input type="range" id="set-cardblur" min="0" max="40"></div>
-            </div>
-            <div class="set-group">
-                <div class="set-group-title">Фон (Canvas)</div>
-                <div class="set-row"><label>Тип фона</label><select id="set-bgtype"><option value="matrix">Матрица</option><option value="particles">Частицы</option><option value="gradient">Градиент</option><option value="void">Тьма</option></select></div>
-                <div class="set-row"><label>Кол-во частиц (Для Particles)</label><input type="number" id="set-pcount" min="10" max="250"></div>
-                <div class="set-row"><label>Шлейф курсора</label><select id="set-trail"><option value="true">Вкл</option><option value="false">Выкл</option></select></div>
-            </div>
-        </div>
-        <div class="btn-stack">
-            <button onclick="downloadJson()">СКАЧАТЬ CONFIG.JSON</button>
-            <button class="secondary" onclick="applyPreview()">Применить предпросмотр</button>
-        </div>
-    </div>
-
     <script>
         let CFG = {};
         let lanyardWs = null;
         let typeWriterTimeout, titleInterval;
         let isPlaying = false;
         
-        let sparks = []; // Искры при клике
-        let chromaHue = 0; // Для RGB режима
+        let sparks = [];
+        let chromaHue = 0;
 
         const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2, rawX: window.innerWidth / 2, rawY: window.innerHeight / 2 };
         const trailPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -305,10 +215,13 @@
         async function loadConfig() {
             try {
                 const response = await fetch('config.json');
-                CFG = response.ok ? await response.json() : getDefaultConfig();
+                if (!response.ok) throw new Error("Config not found");
+                CFG = await response.json();
                 applyConfigToPage(CFG);
-                fillSettingsPanel(CFG);
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error("Ошибка загрузки config.json", e); 
+                document.getElementById('nickname').innerText = "Config Error";
+            }
         }
 
         function hexToRgba(hex, alpha) {
@@ -319,9 +232,6 @@
         }
 
         function applyConfigToPage(c) {
-            CFG = c;
-            
-            // Настройка заголовка вкладки
             clearInterval(titleInterval);
             let titleText = `Bio | ${c.nickname || "User"} | `;
             if (c.scrollingTitle) {
@@ -380,7 +290,6 @@
             type();
         }
 
-        // --- Фон Canvas (Частицы + Матрица) ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -391,7 +300,7 @@
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            if(CFG.bgType === 'matrix') initBackground(); // перерасчет колонок
+            if(CFG.bgType === 'matrix') initBackground();
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
@@ -417,11 +326,10 @@
         }
 
         function renderCanvas() {
-            // Текущий цвет темы (с учетом Chroma Mode)
             const currentColor = CFG.chromaMode ? `hsl(${chromaHue}, 100%, 50%)` : (CFG.themeColor || '#00ffcc');
 
             if (CFG.bgType === 'matrix') {
-                ctx.fillStyle = "rgba(5, 5, 5, 0.05)"; // След матрицы
+                ctx.fillStyle = "rgba(5, 5, 5, 0.05)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = currentColor;
                 ctx.font = matrixFontSize + "px monospace";
@@ -460,7 +368,6 @@
                 }
             }
 
-            // Рендер искр клика
             if (sparks.length > 0) {
                 for(let i = sparks.length - 1; i >= 0; i--) {
                     const s = sparks[i];
@@ -474,9 +381,8 @@
             }
         }
 
-        // --- Искры при клике ---
         window.addEventListener('click', (e) => {
-            if(!CFG.clickSparks || e.target.closest('#settings-panel') || e.target.closest('#enter-screen')) return;
+            if(!CFG.clickSparks || e.target.closest('#enter-screen')) return;
             const clickColor = CFG.chromaMode ? `hsl(${chromaHue}, 100%, 50%)` : (CFG.themeColor || '#00ffcc');
             for(let i=0; i<15; i++) {
                 sparks.push({
@@ -487,7 +393,6 @@
             }
         });
 
-        // --- Анимационный цикл ---
         const dot = document.getElementById('cursor-dot');
         const trail = document.getElementById('cursor-trail');
         const card = document.getElementById('card');
@@ -516,7 +421,6 @@
             cardRot.currentY += (cardRot.targetY - cardRot.currentY) * smooth;
             card.style.transform = `rotateX(${cardRot.currentX.toFixed(2)}deg) rotateY(${cardRot.currentY.toFixed(2)}deg)`;
 
-            // Chroma Mode Логика
             if (CFG.chromaMode) {
                 chromaHue = (chromaHue + 0.5) % 360;
                 document.documentElement.style.setProperty('--theme-color', `hsl(${chromaHue}, 100%, 50%)`);
@@ -527,7 +431,6 @@
         }
         requestAnimationFrame(animLoop);
 
-        // --- Lanyard (Discord Status) ---
         function connectLanyard(userId) {
             if (lanyardWs) lanyardWs.close();
             lanyardWs = new WebSocket("wss://api.lanyard.rest/socket");
@@ -559,7 +462,6 @@
             else { badge.style.display = 'none'; }
         }
 
-        // --- UI Интерактивы ---
         function enterSite() {
             const screen = document.getElementById('enter-screen');
             screen.style.opacity = '0';
@@ -574,85 +476,6 @@
             if (isPlaying) { audio.pause(); playBtn.innerHTML = '▶'; }
             else { audio.play(); playBtn.innerHTML = '⏸'; }
             isPlaying = !isPlaying;
-        });
-
-        // --- Панель Настроек ---
-        function fillSettingsPanel(c) {
-            document.getElementById('set-nickname').value = c.nickname || '';
-            document.getElementById('set-glitch').value = String(c.glitchName !== false);
-            document.getElementById('set-scrolltitle').value = String(c.scrollingTitle !== false);
-            document.getElementById('set-bio').value = c.bioText || '';
-            document.getElementById('set-typespeed').value = c.typewriterSpeed || 70;
-            document.getElementById('set-avatar').value = c.avatar || '';
-            document.getElementById('set-dsid').value = c.discordId || '';
-            document.getElementById('set-showstatus').value = String(c.showDiscordStatus !== false);
-            document.getElementById('set-showact').value = String(c.showDiscordActivity !== false);
-            document.getElementById('set-tg').value = c.telegram || '';
-            document.getElementById('set-ds').value = c.discord || '';
-            document.getElementById('set-audio').value = c.audioUrl || '';
-            document.getElementById('set-song').value = c.songTitle || '';
-            document.getElementById('set-volume').value = c.audioVolume ?? 0.5;
-            document.getElementById('set-color').value = c.themeColor || '#00ffcc';
-            document.getElementById('set-chroma').value = String(c.chromaMode === true);
-            document.getElementById('set-glow').value = c.glowStrength ?? 20;
-            document.getElementById('set-cardbg').value = c.cardBgColor || '#0a0a0a';
-            document.getElementById('set-cardop').value = c.cardOpacity ?? 0.6;
-            document.getElementById('set-cardblur').value = c.cardBlur ?? 16;
-            document.getElementById('set-bgtype').value = c.bgType || 'matrix';
-            document.getElementById('set-pcount').value = c.particleCount || 60;
-            document.getElementById('set-trail').value = String(c.enableCursorTrail !== false);
-            document.getElementById('set-crt').value = String(c.crtEffect === true);
-            document.getElementById('set-vignette').value = String(c.vignette === true);
-            document.getElementById('set-sparks').value = String(c.clickSparks !== false);
-        }
-
-        function extractInputs() {
-            return {
-                nickname: document.getElementById('set-nickname').value,
-                glitchName: document.getElementById('set-glitch').value === "true",
-                scrollingTitle: document.getElementById('set-scrolltitle').value === "true",
-                discordId: document.getElementById('set-dsid').value,
-                showDiscordStatus: document.getElementById('set-showstatus').value === "true",
-                showDiscordActivity: document.getElementById('set-showact').value === "true",
-                bioText: document.getElementById('set-bio').value,
-                typewriterSpeed: parseInt(document.getElementById('set-typespeed').value) || 70,
-                avatar: document.getElementById('set-avatar').value,
-                audioUrl: document.getElementById('set-audio').value,
-                audioVolume: parseFloat(document.getElementById('set-volume').value),
-                songTitle: document.getElementById('set-song').value,
-                telegram: document.getElementById('set-tg').value,
-                discord: document.getElementById('set-ds').value,
-                themeColor: document.getElementById('set-color').value,
-                chromaMode: document.getElementById('set-chroma').value === "true",
-                glowStrength: parseInt(document.getElementById('set-glow').value),
-                cardBgColor: document.getElementById('set-cardbg').value,
-                cardOpacity: parseFloat(document.getElementById('set-cardop').value),
-                cardBlur: parseInt(document.getElementById('set-cardblur').value),
-                bgType: document.getElementById('set-bgtype').value,
-                particleCount: parseInt(document.getElementById('set-pcount').value),
-                enableCursorTrail: document.getElementById('set-trail').value === "true",
-                crtEffect: document.getElementById('set-crt').value === "true",
-                vignette: document.getElementById('set-vignette').value === "true",
-                clickSparks: document.getElementById('set-sparks').value === "true"
-            };
-        }
-
-        function applyPreview() { applyConfigToPage(extractInputs()); }
-
-        function downloadJson() {
-            const data = extractInputs();
-            const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 4));
-            const dl = document.createElement('a');
-            dl.setAttribute("href", str);
-            dl.setAttribute("download", "config.json");
-            document.body.appendChild(dl); dl.click(); dl.remove();
-            applyPreview();
-        }
-
-        document.addEventListener('dblclick', (e) => {
-            if (e.target.closest('.card') || e.target.closest('#settings-panel') || e.target.closest('#enter-screen')) return;
-            const p = document.getElementById('settings-panel');
-            p.style.display = p.style.display === 'flex' ? 'none' : 'flex';
         });
 
         loadConfig();
