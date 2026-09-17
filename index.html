@@ -233,7 +233,7 @@
 
         function applyConfigToPage(c) {
             clearInterval(titleInterval);
-            let titleText = `Bio | ${c.nickname || "User"} | `;
+            let titleText = `БИО | ${c.nickname || "User"} | `;
             if (c.scrollingTitle) {
                 titleInterval = setInterval(() => {
                     titleText = titleText.substring(1) + titleText[0];
