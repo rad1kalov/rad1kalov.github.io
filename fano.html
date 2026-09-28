@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача Фано · Дерево кодирования</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', Roboto, monospace;
+        }
+        body {
+            background: #f5f7fb;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .card {
+            max-width: 1300px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.06);
+            padding: 28px 32px;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: #0b1e3a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .subhead {
+            color: #3e5a7a;
+            margin-bottom: 28px;
+            font-size: 1rem;
+            border-left: 4px solid #2b7be4;
+            padding-left: 16px;
+            background: #eef4ff;
+            border-radius: 0 12px 12px 0;
+            line-height: 1.4;
+        }
+        .config-panel {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 18px;
+            margin-bottom: 28px;
+            background: #f9fcff;
+            padding: 18px 22px;
+            border-radius: 24px;
+            border: 1px solid #d9e6f5;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 140px;
+        }
+        .input-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #2f4e77;
+        }
+        .input-group input {
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1.5px solid #cddef0;
+            font-size: 1rem;
+            font-weight: 500;
+            background: white;
+            transition: 0.15s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #2b7be4;
+            box-shadow: 0 0 0 4px rgba(43,123,228,0.15);
+        }
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-left: auto;
+        }
+        button {
+            background: #2b7be4;
+            border: none;
+            border-radius: 40px;
+            padding: 11px 26px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 10px rgba(43,123,228,0.3);
+        }
+        button.secondary {
+            background: white;
+            color: #1e3d64;
+            border: 1.5px solid #b8cde0;
+            box-shadow: none;
+        }
+        button.secondary:hover {
+            background: #e9f0fa;
+            border-color: #8fb1d4;
+        }
+        button:hover {
+            background: #1d65c9;
+            transform: scale(0.97);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .tree-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 10px;
+        }
+        .tree-section {
+            flex: 2;
+            min-width: 500px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 10px 6px 10px 10px;
+        }
+        .codes-section {
+            flex: 1;
+            min-width: 260px;
+            background: #f6faff;
+            border-radius: 24px;
+            padding: 16px 20px;
+            border: 1px solid #d2e2f5;
+            box-shadow: inset 0 1px 4px #ffffff, 0 4px 8px rgba(0,0,0,0.02);
+        }
+        .codes-section h2 {
+            font-size: 1.3rem;
+            margin: 0 0 16px 0;
+            color: #124072;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .code-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .code-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 8px 14px;
+            border-radius: 40px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border: 1px solid #e2edff;
+        }
+        .code-letter {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0b2b4f;
+            min-width: 40px;
+            text-align: center;
+        }
+        .code-binary {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            background: #eef4fe;
+            padding: 4px 10px;
+            border-radius: 30px;
+            letter-spacing: 1px;
+            font-weight: 500;
+            color: #1a4b8c;
+            font-size: 1rem;
+        }
+        .code-length {
+            font-weight: 600;
+            color: #145a9e;
+            background: #d9ebff;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            min-width: 48px;
+            text-align: center;
+        }
+        .total-length {
+            border-top: 2px dashed #acc9e5;
+            padding-top: 18px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            color: #05223d;
+        }
+        .total-length span {
+            background: #1d4e8a;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 1.6rem;
+        }
+        .fano-warning {
+            margin-top: 16px;
+            background: #fff7e5;
+            border-left: 6px solid #f5b342;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            color: #5e3e0e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tree-svg-wrapper {
+            background: #fbfdff;
+            border-radius: 20px;
+            padding: 8px;
+            border: 1px solid #d4e4f5;
+            overflow-x: auto;
+        }
+        svg {
+            display: block;
+            margin: 0 auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            user-select: none;
+        }
+        .node-circle {
+            fill: #ffffff;
+            stroke: #2b7be4;
+            stroke-width: 2.2;
+            transition: 0.1s;
+        }
+        .node-circle.leaf {
+            fill: #d9ebff;
+            stroke: #1a4b8c;
+            stroke-width: 2.6;
+        }
+        .node-text {
+            font-weight: 600;
+            fill: #06233e;
+            dominant-baseline: middle;
+            text-anchor: middle;
+            font-size: 15px;
+        }
+        .edge-label {
+            font-size: 13px;
+            font-weight: 700;
+            fill: #1060b0;
+            paint-order: stroke;
+            stroke: white;
+            stroke-width: 4px;
+            stroke-linecap: round;
+        }
+        .tree-line {
+            stroke: #7fa9d0;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+        }
+        .no-data {
+            color: #6c86a3;
+            font-style: italic;
+            text-align: center;
+            padding: 30px;
+        }
+        .footer-note {
+            margin-top: 18px;
+            font-size: 0.8rem;
+            color: #7c95b0;
+            text-align: right;
+            border-top: 1px solid #dbe6f2;
+            padding-top: 12px;
+        }
+        .badge {
+            background: #e1efff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #104079;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>
+        <span>🌲 Кодирование Фано</span>
+        <span class="badge">оптимальное дерево</span>
+    </h1>
+    <div class="subhead">
+        Введите буквы и их частоты (веса). Алгоритм строит префиксное дерево с минимальной суммой длин кодов.
+    </div>
+
+    <!-- панель настроек -->
+    <div class="config-panel">
+        <div class="input-group">
+            <label>Количество букв (n)</label>
+            <input type="number" id="nInput" min="2" max="12" value="4" step="1">
+        </div>
+        <div class="button-row">
+            <button id="generateBtn">Сгенерировать буквы</button>
+            <button id="solveBtn" class="secondary">Решить задачу</button>
+        </div>
+    </div>
+
+    <!-- поля для букв и весов (динамические) -->
+    <div id="lettersInputs" style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;"></div>
+
+    <!-- основная область: дерево + коды -->
+    <div class="tree-container">
+        <div class="tree-section">
+            <div class="tree-svg-wrapper" id="treeSvgWrapper">
+                <div class="no-data">🌿 Дерево появится после решения</div>
+            </div>
+        </div>
+        <div class="codes-section">
+            <h2>📋 Кодовые слова</h2>
+            <div id="codeList" class="code-list">
+                <div class="no-data">— нет данных —</div>
+            </div>
+            <div class="total-length" id="totalLengthContainer" style="display: none;">
+                Сумма длин <span id="totalLengthValue">0</span>
+            </div>
+            <div id="fanoWarning" class="fano-warning" style="display: none;">
+                ⚠️ Условие Фано соблюдено: ни один код не является префиксом другого.
+            </div>
+        </div>
+    </div>
+    <div class="footer-note">
+        * длины кодов минимизированы, дерево построено по алгоритму Фано (жадное слияние).
+    </div>
+</div>
+<script>
+    (function(){
+        // ---------- DOM элементы ----------
+        const nInput = document.getElementById('nInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const solveBtn = document.getElementById('solveBtn');
+        const lettersInputsDiv = document.getElementById('lettersInputs');
+        const treeSvgWrapper = document.getElementById('treeSvgWrapper');
+        const codeListDiv = document.getElementById('codeList');
+        const totalLengthContainer = document.getElementById('totalLengthContainer');
+        const totalLengthValue = document.getElementById('totalLengthValue');
+        const fanoWarning = document.getElementById('fanoWarning');
+
+        // ---------- состояние ----------
+        let letters = []; // { letter, weight }
+
+        // ---------- вспомогательные функции ----------
+        function getDefaultLetters(n) {
+            const alphabet = 'ABCDEFGHIJKL'.split('');
+            const defaultWeights = [5, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1];
+            const res = [];
+            for (let i = 0; i < n; i++) {
+                res.push({
+                    letter: alphabet[i] || String.fromCharCode(65 + i),
+                    weight: defaultWeights[i] || 1
+                });
+            }
+            return res;
+        }
+
+        // отрисовать поля ввода для букв и весов
+        function renderLetterInputs() {
+            const n = parseInt(nInput.value, 10);
+            // если количество не совпадает с текущим массивом — пересоздаём
+            if (letters.length !== n) {
+                letters = getDefaultLetters(n);
+            } else {
+                // оставляем введённые значения, но обрезаем/дополняем
+                if (letters.length > n) letters = letters.slice(0, n);
+                while (letters.length < n) {
+                    const idx = letters.length;
+                    letters.push({
+                        letter: String.fromCharCode(65 + idx),
+                        weight: 1
+                    });
+                }
+            }
+
+            // перерисовываем поля
+            lettersInputsDiv.innerHTML = '';
+            letters.forEach((item, idx) => {
+                const group = document.createElement('div');
+                group.className = 'input-group';
+                group.style.minWidth = '130px';
+                group.innerHTML = `
+                    <label>Буква ${idx+1}</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" class="letter-input" data-index="${idx}" value="${item.letter}" maxlength="2" style="width: 70px; text-align: center; text-transform: uppercase;">
+                        <input type="number" class="weight-input" data-index="${idx}" value="${item.weight}" min="1" step="1" style="width: 80px;">
+                    </div>
+                `;
+                lettersInputsDiv.appendChild(group);
+            });
+
+            // навешиваем обработчики
+            document.querySelectorAll('.letter-input').forEach(inp => {
+                inp.addEventListener('input', (e) => {
+                    const i = parseInt(e.target.dataset.index, 10);
+                    letters[i].letter = e.target.value.trim().toUpperCase() || '?';
+                });
+            });
+            document.querySelectorAll('.weight-input').forEach(inp => {
+                inp.addEventListener('input', (e) => {
+                    const i = parseInt(e.target.dataset.index, 10);
+                    let val = parseInt(e.target.value, 10);
+                    if (isNaN(val) || val < 1) val = 1;
+                    letters[i].weight = val;
+                });
+            });
+        }
+
+        // считываем актуальные значения из полей (на случай, если не нажат input)
+        function syncLettersFromInputs() {
+            document.querySelectorAll('.letter-input').forEach(inp => {
+                const i = parseInt(inp.dataset.index, 10);
+                if (letters[i]) letters[i].letter = inp.value.trim().toUpperCase() || '?';
+            });
+            document.querySelectorAll('.weight-input').forEach(inp => {
+                const i = parseInt(inp.dataset.index, 10);
+                if (letters[i]) {
+                    let val = parseInt(inp.value, 10);
+                    if (isNaN(val) || val < 1) val = 1;
+                    letters[i].weight = val;
+                }
+            });
+        }
+
+        // ---------- алгоритм Фано (построение дерева) ----------
+        // возвращает { root, codes, totalLength, fanoCondition }
+        function buildFanoTree(items) {
+            // items: массив { letter, weight }
+            if (!items.length) return { root: null, codes: {}, totalLength: 0 };
+
+            // создаём листья
+            let nodes = items.map((it, idx) => ({
+                id: `leaf_${idx}_${it.letter}`,
+                letter: it.letter,
+                weight: it.weight,
+                left: null,
+                right: null,
+                isLeaf: true
+            }));
+
+            // если один символ — код 0 (но для n>=2 это не нужно)
+            if (nodes.length === 1) {
+                return {
+                    root: nodes[0],
+                    codes: { [nodes[0].letter]: '0' },
+                    totalLength: nodes[0].weight * 1,
+                    fanoCondition: true
+                };
+            }
+
+            // жадное слияние
+            while (nodes.length > 1) {
+                // сортируем по возрастанию веса (стабильно)
+                nodes.sort((a, b) => a.weight - b.weight);
+                // берём два наименьших
+                const left = nodes.shift();
+                const right = nodes.shift();
+                const parent = {
+                    id: `inner_${left.id}_${right.id}`,
+                    letter: null,
+                    weight: left.weight + right.weight,
+                    left: left,
+                    right: right,
+                    isLeaf: false
+                };
+                nodes.push(parent);
+            }
+
+            const root = nodes[0];
+
+            // обход дерева для получения кодов
+            const codes = {};
+            function traverse(node, prefix) {
+                if (!node) return;
+                if (node.isLeaf) {
+                    codes[node.letter] = prefix || '0'; // если вдруг пустой
+                } else {
+                    traverse(node.left, prefix + '0');
+                    traverse(node.right, prefix + '1');
+                }
+            }
+            traverse(root, '');
+
+            // проверка условия Фано (префиксность)
+            let fanoCondition = true;
+            const codeValues = Object.values(codes);
+            for (let i = 0; i < codeValues.length; i++) {
+                for (let j = 0; j < codeValues.length; j++) {
+                    if (i !== j && codeValues[j].startsWith(codeValues[i])) {
+                        fanoCondition = false;
+                        break;
+                    }
+                }
+                if (!fanoCondition) break;
+            }
+
+            // считаем сумму длин
+            let totalLength = 0;
+            for (const item of items) {
+                const code = codes[item.letter];
+                if (code) totalLength += item.weight * code.length;
+                else {
+                    // если буква повторяется — берём первый попавшийся код (не должно быть)
+                    const firstCode = Object.entries(codes).find(([k, v]) => k === item.letter)?.[1];
+                    if (firstCode) totalLength += item.weight * firstCode.length;
+                }
+            }
+
+            return { root, codes, totalLength, fanoCondition };
+        }
+
+        // ---------- отрисовка дерева (SVG) ----------
+        function renderTree(root) {
+            if (!root) {
+                treeSvgWrapper.innerHTML = '<div class="no-data">🌿 Нет данных для отображения</div>';
+                return;
+            }
+
+            // вычислим позиции узлов (простой алгоритм: рекурсивно)
+            // будем хранить узлы с координатами
+            const nodePositions = new Map(); // key: id узла, value: {x, y, node}
+            let leafCounter = 0;
+            const verticalSpacing = 68;
+            const horizontalSpacing = 70;
+            const marginX = 40;
+            const marginY = 45;
+
+            // первый проход: назначаем y для листьев, x для всех
+            function assignPositions(node, depth) {
+                if (!node) return;
+                // X зависит от глубины (горизонтальное дерево? нет, сделаем вертикальное: корень сверху, листья снизу)
+                // но для наглядности сделаем горизонтальное: корень слева, листья справа.
+                // Так лучше видно префиксные коды. Переделаем.
+                // X = depth * horizontalSpacing + marginX
+                // Y для листьев последовательно, для внутренних — среднее детей
+                const x = depth * horizontalSpacing + marginX;
+                if (node.isLeaf) {
+                    const y = leafCounter * verticalSpacing + marginY;
+                    leafCounter++;
+                    nodePositions.set(node.id, { x, y, node });
+                } else {
+                    // сначала обходим детей
+                    assignPositions(node.left, depth + 1);
+                    assignPositions(node.right, depth + 1);
+                    const leftPos = nodePositions.get(node.left.id);
+                    const rightPos = nodePositions.get(node.right.id);
+                    let y = marginY;
+                    if (leftPos && rightPos) {
+                        y = (leftPos.y + rightPos.y) / 2;
+                    } else if (leftPos) {
+                        y = leftPos.y;
+                    } else if (rightPos) {
+                        y = rightPos.y;
+                    }
+                    nodePositions.set(node.id, { x, y, node });
+                }
+            }
+
+            // сброс счётчика
+            leafCounter = 0;
+            assignPositions(root, 0);
+
+            // вычисляем размеры SVG
+            let maxX = 0, maxY = 0, minY = Infinity;
+            for (let pos of nodePositions.values()) {
+                maxX = Math.max(maxX, pos.x);
+                maxY = Math.max(maxY, pos.y);
+                minY = Math.min(minY, pos.y);
+            }
+            const svgWidth = maxX + 90;
+            const svgHeight = maxY + 80;
+            const shiftY = (minY < 30) ? 30 - minY : 0; // чтобы не обрезалось сверху
+
+            // строим SVG
+            let svgContent = `<svg width="${svgWidth}" height="${svgHeight + shiftY}" viewBox="0 0 ${svgWidth} ${svgHeight + shiftY}" style="background: transparent;">`;
+
+            // линии (рёбра) — сначала, чтобы были под кругами
+            for (let [id, pos] of nodePositions.entries()) {
+                const node = pos.node;
+                if (!node.isLeaf) {
+                    const leftChild = node.left;
+                    const rightChild = node.right;
+                    const leftPos = nodePositions.get(leftChild.id);
+                    const rightPos = nodePositions.get(rightChild.id);
+                    const x1 = pos.x, y1 = pos.y + shiftY;
+                    if (leftPos) {
+                        const x2 = leftPos.x, y2 = leftPos.y + shiftY;
+                        // линия к левому ребёнку (0)
+                        svgContent += `<line class="tree-line" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />`;
+                        // подпись 0 на середине
+                        const midX = (x1 + x2) / 2, midY = (y1 + y2) / 2;
+                        svgContent += `<text class="edge-label" x="${midX}" y="${midY - 5}" text-anchor="middle">0</text>`;
+                    }
+                    if (rightPos) {
+                        const x2 = rightPos.x, y2 = rightPos.y + shiftY;
+                        svgContent += `<line class="tree-line" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />`;
+                        const midX = (x1 + x2) / 2, midY = (y1 + y2) / 2;
+                        svgContent += `<text class="edge-label" x="${midX}" y="${midY - 5}" text-anchor="middle">1</text>`;
+                    }
+                }
+            }
+
+            // круги и подписи
+            for (let [id, pos] of nodePositions.entries()) {
+                const node = pos.node;
+                const cx = pos.x, cy = pos.y + shiftY;
+                const isLeaf = node.isLeaf;
+                // круг
+                svgContent += `<circle class="node-circle ${isLeaf ? 'leaf' : ''}" cx="${cx}" cy="${cy}" r="22" />`;
+                // текст: для листа — буква, для внутреннего — вес
+                let label = '';
+                if (isLeaf) {
+                    label = node.letter || '?';
+                } else {
+                    label = node.weight !== undefined ? node.weight : '';
+                }
+                svgContent += `<text class="node-text" x="${cx}" y="${cy}">${label}</text>`;
+            }
+
+            svgContent += `</svg>`;
+            treeSvgWrapper.innerHTML = svgContent;
+        }
+
+        // ---------- отображение кодов и суммы длин ----------
+        function renderCodesAndTotal(codes, totalLength, fanoCondition, items) {
+            if (!codes || Object.keys(codes).length === 0) {
+                codeListDiv.innerHTML = '<div class="no-data">— нет данных —</div>';
+                totalLengthContainer.style.display = 'none';
+                fanoWarning.style.display = 'none';
+                return;
+            }
+
+            // формируем список кодов
+            let html = '';
+            // проходим по исходным буквам, чтобы сохранить порядок
+            for (const item of items) {
+                const code = codes[item.letter];
+                if (code) {
+                    html += `
+                        <div class="code-item">
+                            <span class="code-letter">${item.letter}</span>
+                            <span class="code-binary">${code}</span>
+                            <span class="code-length">${code.length}</span>
+                        </div>
+                    `;
+                }
+            }
+            codeListDiv.innerHTML = html;
+
+            // сумма длин
+            totalLengthValue.textContent = totalLength;
+            totalLengthContainer.style.display = 'flex';
+
+            // предупреждение о Фано
+            if (fanoCondition) {
+                fanoWarning.style.display = 'flex';
+                fanoWarning.innerHTML = '✅ Условие Фано соблюдено: ни один код не является префиксом другого.';
+            } else {
+                fanoWarning.style.display = 'flex';
+                fanoWarning.innerHTML = '⚠️ Внимание: возможно нарушение условия Фано (префиксность) — проверьте коды.';
+            }
+        }
+
+        // ---------- главная функция решения ----------
+        function solve() {
+            syncLettersFromInputs();
+
+            // фильтруем: убираем возможные пустые буквы? оставим как есть, но проверим веса
+            const validItems = letters.filter(it => it.weight > 0);
+            if (validItems.length === 0) {
+                alert('Добавьте хотя бы одну букву с положительным весом.');
+                return;
+            }
+
+            // проверка на уникальность букв (если дубликаты — алгоритм может запутаться, но мы просто предупредим)
+            const letterSet = new Set();
+            let hasDuplicate = false;
+            for (let it of validItems) {
+                if (letterSet.has(it.letter)) {
+                    hasDuplicate = true;
+                    break;
+                }
+                letterSet.add(it.letter);
+            }
+            if (hasDuplicate) {
+                alert('Буквы должны быть уникальными. Пожалуйста, исправьте.');
+                return;
+            }
+
+            const { root, codes, totalLength, fanoCondition } = buildFanoTree(validItems);
+            renderTree(root);
+            renderCodesAndTotal(codes, totalLength, fanoCondition, validItems);
+        }
+
+        // ---------- генерация букв (обновление полей) ----------
+        function generateLetters() {
+            const n = parseInt(nInput.value, 10);
+            if (isNaN(n) || n < 2) {
+                alert('Введите количество букв от 2 до 12.');
+                nInput.value = 4;
+                return;
+            }
+            if (n > 12) {
+                alert('Максимум 12 букв для удобства отображения.');
+                nInput.value = 12;
+            }
+            letters = getDefaultLetters(parseInt(nInput.value, 10));
+            renderLetterInputs();
+            // очищаем дерево и коды
+            treeSvgWrapper.innerHTML = '<div class="no-data">🌿 Дерево появится после решения</div>';
+            codeListDiv.innerHTML = '<div class="no-data">— нет данных —</div>';
+            totalLengthContainer.style.display = 'none';
+            fanoWarning.style.display = 'none';
+        }
+
+        // ---------- инициализация ----------
+        function init() {
+            // начальное количество 4
+            nInput.value = 4;
+            letters = getDefaultLetters(4);
+            renderLetterInputs();
+
+            // обработчики
+            generateBtn.addEventListener('click', generateLetters);
+            solveBtn.addEventListener('click', solve);
+
+            // при изменении nInput можно сразу перегенерировать? нет, по кнопке.
+            nInput.addEventListener('change', function() {
+                let val = parseInt(this.value, 10);
+                if (isNaN(val) || val < 2) this.value = 2;
+                if (val > 12) this.value = 12;
+            });
+
+            // первичное заполнение
+            // Можно сразу решить? Нет, пусть пользователь нажмёт.
+            // Но для удобства можно вызвать solve после загрузки? Нет, оставим пустым.
+        }
+
+        init();
+    })();
+</script>
+</body>
+</html>
