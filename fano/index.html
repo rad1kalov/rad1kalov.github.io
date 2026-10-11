@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЕГЭ Информатика Задание 4 — Решатель Условия Фано</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Custom scrollbar for SVG tree viewer */
+        .tree-scroll::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .tree-scroll::-webkit-scrollbar-track {
+            background: #0f172a;
+            border-radius: 4px;
+        }
+        .tree-scroll::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        .tree-scroll::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-indigo-500 selection:text-white">
+<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+    <!-- Header bar -->
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-5 gap-4">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center p-2 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 font-mono-code font-bold text-sm">
+                    №4 ЕГ⁠Э
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                    Решатель Условия Фано
+                </h1>
+            </div>
+            <p class="text-sm text-slate-400 mt-1">
+                Однозначное декодирование, расчет длин слов и визуализация бинарного префиксного дерева
+            </p>
+        </div>
+
+        <!-- Quick Presets -->
+        <div class="flex flex-wrap items-center gap-1.5 bg-slate-900 p-1.5 rounded-xl border border-slate-800 text-xs">
+            <span class="text-slate-400 px-2 font-medium">Пресеты:</span>
+            <button onclick="loadPreset(134)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white transition font-mono-code">№134 (Ж)</button>
+            <button onclick="loadPreset(150)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white transition font-mono-code">№150 (ВВЕДЕНИЕ)</button>
+            <button onclick="loadPreset(151)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white transition font-mono-code">№151 (КУКУРУЗА)</button>
+            <button onclick="loadPreset(160)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white transition font-mono-code">№160 (Д)</button>
+            <button onclick="loadPreset(125)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white transition font-mono-code">№125 (Й)</button>
+        </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Left Panel: Input & Settings (5 cols) -->
+        <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xl space-y-5">
+            <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+                Параметры задачи
+            </h2>
+
+            <!-- Mode Selector -->
+            <div>
+                <label class="block text-xs uppercase tracking-wider font-semibold text-slate-400 mb-2">
+                    Режим работы
+                </label>
+                <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                    <label class="cursor-pointer text-center">
+                        <input type="radio" name="mode" value="letter" checked onchange="handleModeChange()" class="peer sr-only">
+                        <div class="py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 peer-checked:bg-indigo-600 peer-checked:text-white transition">
+                            Код одной буквы
+                        </div>
+                    </label>
+                    <label class="cursor-pointer text-center">
+                        <input type="radio" name="mode" value="word" onchange="handleModeChange()" class="peer sr-only">
+                        <div class="py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 peer-checked:bg-indigo-600 peer-checked:text-white transition">
+                            Длина слова (мин.)
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Known Codes -->
+            <div>
+                <label for="known-codes" class="block text-xs uppercase tracking-wider font-semibold text-slate-400 mb-1.5 flex justify-between">
+                    <span>Известные коды</span>
+                    <span class="text-slate-500 font-normal">Буква - код</span>
+                </label>
+                <textarea id="known-codes" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 font-mono-code focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition outline-none" placeholder="А-10, Б-110, В-010, Г-0110, Д-111, Е-0111"></textarea>
+            </div>
+
+            <!-- Full Alphabet -->
+            <div>
+                <label for="alphabet" class="block text-xs uppercase tracking-wider font-semibold text-slate-400 mb-1.5">
+                    Полный алфавит сообщений
+                </label>
+                <input type="text" id="alphabet" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 font-mono-code focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition outline-none" placeholder="А, Б, В, Г, Д, Е, Ж, З">
+                <span class="text-[11px] text-slate-500 mt-1 block">Укажите все буквы, передаваемые по каналу связи.</span>
+            </div>
+
+            <!-- Dynamic Input 1: Target Letter -->
+            <div id="container-target-letter">
+                <label for="target-letter" class="block text-xs uppercase tracking-wider font-semibold text-slate-400 mb-1.5">
+                    Искомая буква
+                </label>
+                <input type="text" id="target-letter" maxlength="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 font-mono-code focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition outline-none" placeholder="Ж">
+            </div>
+
+            <!-- Dynamic Input 2: Target Word -->
+            <div id="container-target-word" class="hidden">
+                <label for="target-word" class="block text-xs uppercase tracking-wider font-semibold text-slate-400 mb-1.5">
+                    Слово для кодирования
+                </label>
+                <input type="text" id="target-word" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 font-mono-code uppercase focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition outline-none" placeholder="ВВЕДЕНИЕ">
+            </div>
+
+            <!-- Solve Button -->
+            <button onclick="solveTask()" class="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition active:scale-[0.99] flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Рассчитать и построить дерево
+            </button>
+        </div>
+
+        <!-- Right Panel: Results & Tree Visualizer (7 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+
+            <!-- Result Box -->
+            <div id="result-card" class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-3 border-b border-slate-800/60 pb-3">
+                    <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Результат решения</span>
+                    <span id="badge-mode" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                        Кратчайший код
+                    </span>
+                </div>
+                
+                <div id="result-content" class="text-slate-300 text-sm">
+                    Задайте условие задачи слева и нажмите <span class="text-indigo-400 font-semibold">«Рассчитать и построить дерево»</span>.
+                </div>
+            </div>
+
+            <!-- Tree Card -->
+            <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xl flex flex-col space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-800/60 pb-3">
+                    <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7h16M4 7l3-4h10l3 4" />
+                        </svg>
+                        Бинарное дерево Фано
+                    </h2>
+
+                    <!-- Legend -->
+                    <div class="flex flex-wrap items-center gap-3 text-xs">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-rose-500 border border-rose-400"></span>
+                            <span class="text-slate-400">Дано</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 border border-emerald-400"></span>
+                            <span class="text-slate-400">Подобрано</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+                            <span class="text-slate-400">Развилка</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SVG Tree Wrapper -->
+                <div class="tree-scroll w-full overflow-x-auto overflow-y-hidden bg-slate-950/80 rounded-xl border border-slate-800/80 p-3 min-h-[380px] flex items-center justify-center">
+                    <svg id="fano-svg" class="max-w-none transition-all duration-300"></svg>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // State & presets
+    const PRESETS = {
+        134: {
+            mode: 'letter',
+            known: "А-10, Б-110, В-010, Г-0110, Д-111, Е-0111",
+            alphabet: "А, Б, В, Г, Д, Е, Ж, З",
+            targetLetter: "Ж",
+            targetWord: ""
+        },
+        150: {
+            mode: 'word',
+            known: "А-110, Б-01, И-000",
+            alphabet: "А, Б, В, Д, Е, И, Н",
+            targetLetter: "",
+            targetWord: "ВВЕДЕНИЕ"
+        },
+        151: {
+            mode: 'word',
+            known: "А-00, Б-01, Ф-111",
+            alphabet: "А, Б, З, К, Р, У, Ф",
+            targetLetter: "",
+            targetWord: "КУКУРУЗА"
+        },
+        160: {
+            mode: 'letter',
+            known: "А-00, Б-01, В-100, Г-101",
+            alphabet: "А, Б, В, Г, Д, Е, Ж",
+            targetLetter: "Д",
+            targetWord: ""
+        },
+        125: {
+            mode: 'letter',
+            known: "А-0100, Б-0101, В-1000, Г-11, Д-000, Е-101, Ж-0010, З-0011, И-1001",
+            alphabet: "А, Б, В, Г, Д, Е, Ж, З, И, Й",
+            targetLetter: "Й",
+            targetWord: ""
+        }
+    };
+
+    function loadPreset(id) {
+        const p = PRESETS[id];
+        if (!p) return;
+
+        document.querySelector(`input[name="mode"][value="${p.mode}"]`).checked = true;
+        handleModeChange();
+
+        document.getElementById('known-codes').value = p.known;
+        document.getElementById('alphabet').value = p.alphabet;
+        document.getElementById('target-letter').value = p.targetLetter;
+        document.getElementById('target-word').value = p.targetWord;
+
+        solveTask();
+    }
+
+    function handleModeChange() {
+        const mode = document.querySelector('input[name="mode"]:checked').value;
+        const letterBox = document.getElementById('container-target-letter');
+        const wordBox = document.getElementById('container-target-word');
+        const badge = document.getElementById('badge-mode');
+
+        if (mode === 'letter') {
+            letterBox.classList.remove('hidden');
+            wordBox.classList.add('hidden');
+            badge.textContent = "Кратчайший код";
+        } else {
+            letterBox.classList.add('hidden');
+            wordBox.classList.remove('hidden');
+            badge.textContent = "Минимальная длина слова";
+        }
+    }
+
+    function parseInput() {
+        const knownText = document.getElementById('known-codes').value;
+        const alphabetText = document.getElementById('alphabet').value;
+
+        // Parse Known Codes: Support "А-00", "А: 00", "А = 00", "А 00"
+        const known = {};
+        const regex = /([А-Яа-яA-Za-zЁё])\s*[-=:]*\s*([01]+)/g;
+        let match;
+        while ((match = regex.exec(knownText)) !== null) {
+            const letter = match[1].toUpperCase();
+            const code = match[2];
+            known[letter] = code;
+        }
+
+        // Parse Alphabet
+        const rawLetters = alphabetText.toUpperCase().match(/[А-ЯA-ZЁ]/g) || [];
+        const alphabet = Array.from(new Set(rawLetters));
+
+        // Make sure all known letters are also part of alphabet
+        Object.keys(known).forEach(letter => {
+            if (!alphabet.includes(letter)) alphabet.push(letter);
+        });
+
+        return { known, alphabet };
+    }
+
+    // Check Fano condition violation between any existing codes
+    function validateKnownCodes(known) {
+        const entries = Object.entries(known);
+        for (let i = 0; i < entries.length; i++) {
+            for (let j = 0; j < entries.length; j++) {
+                if (i === j) continue;
+                const [l1, c1] = entries[i];
+                const [l2, c2] = entries[j];
+                if (c2.startsWith(c1)) {
+                    return `Ошибка в исходных данных: код для ${l1} (${c1}) является началом кода для ${l2} (${c2}). Прямое условие Фано нарушено!`;
+                }
+            }
+        }
+        return null;
+    }
+
+    // Check if code 'cand' violates Fano with any code in list 'existing'
+    function isValidFano(cand, existing) {
+        for (const code of existing) {
+            // Cannot branch from already closed letter
+            if (cand.startsWith(code)) return false;
+            // Cannot take an internal node that already has child letters below it!
+            if (code.startsWith(cand)) return false;
+        }
+        return true;
+    }
+
+    // Kraft-McMillan capacity: sum(2^(-len)) <= 1
+    function getRemainingCapacity(assignedCodes) {
+        let sum = 0;
+        for (const c of assignedCodes) {
+            sum += Math.pow(2, -c.length);
+        }
+        return 1 - sum;
+    }
+
+    function solveModeLetter(known, alphabet, targetLetter) {
+        if (!targetLetter) {
+            throw new Error("Укажите искомую букву для поиска!");
+        }
+
+        if (known[targetLetter]) {
+            return {
+                targetLetter,
+                code: known[targetLetter],
+                isAlreadyKnown: true,
+                allCodes: { ...known }
+            };
+        }
+
+        const knownCodesList = Object.values(known);
+        // Number of unassigned letters other than target
+        const unassignedOthersCount = alphabet.filter(l => l !== targetLetter && !known[l]).length;
+
+        // BFS to find shortest, then smallest numerical code
+        let queue = ["0", "1"];
+        let bestCode = null;
+        const maxDepth = 12;
+
+        while (queue.length > 0) {
+            const cand = queue.shift();
+            if (cand.length > maxDepth) break;
+
+            // 1. If cand starts with an existing letter, it's inside a closed subtree -> prune
+            let violatesClosedLeaf = knownCodesList.some(c => cand.startsWith(c));
+            if (violatesClosedLeaf) continue;
+
+            // 2. If cand is prefix of an existing letter, cand CANNOT be a letter (must remain branch)
+            let isPrefixOfKnown = knownCodesList.some(c => c.startsWith(cand));
+            if (isPrefixOfKnown) {
+                // Must branch deeper
+                queue.push(cand + "0", cand + "1");
+                continue;
+            }
+
+            // 3. Candidate is completely free. Check Kraft inequality for remaining alphabet
+            const candCap = Math.pow(2, -cand.length);
+            const remainingCap = getRemainingCapacity(knownCodesList) - candCap;
+            const EPS = 1e-12;
+
+            if (unassignedOthersCount === 0) {
+                if (remainingCap >= -EPS) {
+                    bestCode = cand;
+                    break;
+                }
+            } else {
+                // Must strictly have capacity left for at least unassignedOthersCount leaves
+                if (remainingCap > EPS) {
+                    bestCode = cand;
+                    break;
+                }
+            }
+
+            // If capacity test failed, explore deeper
+            queue.push(cand + "0", cand + "1");
+        }
+
+        if (!bestCode) {
+            throw new Error("Не удалось найти допустимый код. В дереве недостаточно свободной ёмкости для всех букв алфавита.");
+        }
+
+        const finalCodes = { ...known, [targetLetter]: bestCode };
+        return {
+            targetLetter,
+            code: bestCode,
+            isAlreadyKnown: false,
+            allCodes: finalCodes,
+            unassignedOthersCount
+        };
+    }
+
+    // Collect all available free leaf prefixes up to maximum depth
+    function getAvailableFreePrefixes(existingCodes, maxDepth = 6) {
+        let freeNodes = [];
+
+        function explore(prefix) {
+            if (prefix.length > maxDepth) return;
+            // If prefix starts with closed code, skip
+            if (existingCodes.some(c => prefix.startsWith(c))) return;
+            // If an existing code starts with prefix, cannot use prefix as leaf; must go deeper
+            if (existingCodes.some(c => c.startsWith(prefix))) {
+                explore(prefix + "0");
+                explore(prefix + "1");
+                return;
+            }
+            // Prefix is completely free!
+            freeNodes.push(prefix);
+        }
+
+        explore("0");
+        explore("1");
+        return freeNodes;
+    }
+
+    function solveModeWord(known, alphabet, targetWord) {
+        if (!targetWord || targetWord.trim().length === 0) {
+            throw new Error("Введите слово для кодирования!");
+        }
+
+        const word = targetWord.trim().toUpperCase();
+        // Count frequencies of letters in target word
+        const freqs = {};
+        for (const ch of word) {
+            freqs[ch] = (freqs[ch] || 0) + 1;
+        }
+
+        // Separate letters in word into: already known and needing codes
+        const wordLetters = Object.keys(freqs);
+        const unknownWordLetters = wordLetters.filter(l => !known[l]);
+
+        // Sort unknown word letters by frequency descending
+        unknownWordLetters.sort((a, b) => freqs[b] - freqs[a]);
+
+        // Letters in alphabet that are NOT known and NOT in word
+        const otherAlphabetLetters = alphabet.filter(l => !known[l] && !freqs[l]);
+        const otherLettersCount = otherAlphabetLetters.length;
+
+        // Base length from already known letters
+        let baseLength = 0;
+        for (const [ch, count] of Object.entries(freqs)) {
+            if (known[ch]) {
+                baseLength += count * known[ch].length;
+            }
+        }
+
+        // If no unknown letters in word
+        if (unknownWordLetters.length === 0) {
+            return {
+                word,
+                totalLength: baseLength,
+                letterAssignments: { ...known },
+                breakdown: freqs,
+                otherLettersCount
+            };
+        }
+
+        // Get free node candidates
+        const existingCodes = Object.values(known);
+        const freePrefixes = getAvailableFreePrefixes(existingCodes, 7);
+
+        // Sort candidates by length, then numerical value
+        freePrefixes.sort((a, b) => a.length - b.length || a.localeCompare(b));
+
+        // Backtracking / Branch and Bound to find optimal assignment for unknown letters in word
+        let bestCost = Infinity;
+        let bestAssignment = null;
+
+        function search(index, currentAssignment, usedPrefixes) {
+            if (index === unknownWordLetters.length) {
+                // Check if remaining tree capacity is enough for otherAlphabetLetters
+                const allUsed = [...existingCodes, ...Object.values(currentAssignment)];
+                const remCap = getRemainingCapacity(allUsed);
+                const EPS = 1e-12;
+
+                if (otherLettersCount === 0 || remCap > EPS) {
+                    let cost = 0;
+                    for (const [ch, code] of Object.entries(currentAssignment)) {
+                        cost += freqs[ch] * code.length;
+                    }
+                    if (cost < bestCost) {
+                        bestCost = cost;
+                        bestAssignment = { ...currentAssignment };
+                    }
+                }
+                return;
+            }
+
+            const letter = unknownWordLetters[index];
+            const letterFreq = freqs[letter];
+
+            // Explore free prefix candidates
+            for (let i = 0; i < freePrefixes.length; i++) {
+                const cand = freePrefixes[i];
+                if (!isValidFano(cand, usedPrefixes)) continue;
+
+                // Pruning bound
+                const estCost = letterFreq * cand.length;
+                if (estCost >= bestCost) continue;
+
+                currentAssignment[letter] = cand;
+                usedPrefixes.push(cand);
+
+                search(index + 1, currentAssignment, usedPrefixes);
+
+                delete currentAssignment[letter];
+                usedPrefixes.pop();
+            }
+        }
+
+        search(0, {}, [...existingCodes]);
+
+        if (!bestAssignment) {
+            throw new Error("Не удалось подобрать коды для слова с сохранением емкости для остального алфавита.");
+        }
+
+        const totalLength = baseLength + bestCost;
+        const allAssigned = { ...known, ...bestAssignment };
+
+        return {
+            word,
+            totalLength,
+            letterAssignments: allAssigned,
+            breakdown: freqs,
+            bestAssignment,
+            otherLettersCount
+        };
+    }
+
+    class TreeNode {
+        constructor(bit = '') {
+            this.bit = bit;
+            this.left = null;  // bit 0
+            this.right = null; // bit 1
+            this.letter = null;
+            this.status = null; // 'known' | 'solved' | 'intermediate'
+            this.code = '';
+        }
+    }
+
+    function buildPrefixTree(known, solvedLetters = {}) {
+        const root = new TreeNode('');
+        root.status = 'intermediate';
+
+        const addWord = (letter, code, status) => {
+            let curr = root;
+            for (let i = 0; i < code.length; i++) {
+                const bit = code[i];
+                if (bit === '0') {
+                    if (!curr.left) curr.left = new TreeNode('0');
+                    curr = curr.left;
+                } else {
+                    if (!curr.right) curr.right = new TreeNode('1');
+                    curr = curr.right;
+                }
+                if (!curr.status) curr.status = 'intermediate';
+            }
+            curr.letter = letter;
+            curr.code = code;
+            curr.status = status;
+        };
+
+        for (const [letter, code] of Object.entries(known)) {
+            addWord(letter, code, 'known');
+        }
+
+        for (const [letter, code] of Object.entries(solvedLetters)) {
+            addWord(letter, code, 'solved');
+        }
+
+        return root;
+    }
+
+    function renderTreeSVG(root) {
+        const svg = document.getElementById('fano-svg');
+        svg.innerHTML = '';
+
+        if (!root) return;
+
+        // Tree layout coordinates calculation
+        let maxDepth = 0;
+        let leafCount = 0;
+
+        function measure(node, depth) {
+            if (!node) return;
+            if (depth > maxDepth) maxDepth = depth;
+            if (!node.left && !node.right) {
+                leafCount++;
+            }
+            measure(node.left, depth + 1);
+            measure(node.right, depth + 1);
+        }
+        measure(root, 0);
+
+        const levelGap = 68;
+        const width = Math.max(760, (leafCount + 1) * 80);
+        const height = (maxDepth + 1) * levelGap + 50;
+
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+        const nodesToRender = [];
+        const edgesToRender = [];
+
+        function layout(node, depth, left, right) {
+            if (!node) return null;
+            const x = (left + right) / 2;
+            const y = depth * levelGap + 36;
+
+            const currentObj = { node, x, y };
+            nodesToRender.push(currentObj);
+
+            if (node.left) {
+                const leftChild = layout(node.left, depth + 1, left, x);
+                if (leftChild) {
+                    edgesToRender.push({ x1: x, y1: y, x2: leftChild.x, y2: leftChild.y, bit: '0' });
+                }
+            }
+
+            if (node.right) {
+                const rightChild = layout(node.right, depth + 1, x, right);
+                if (rightChild) {
+                    edgesToRender.push({ x1: x, y1: y, x2: rightChild.x, y2: rightChild.y, bit: '1' });
+                }
+            }
+
+            return currentObj;
+        }
+
+        layout(root, 0, 20, width - 20);
+
+        // 1. Draw Edges
+        edgesToRender.forEach(edge => {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', edge.x1);
+            line.setAttribute('y1', edge.y1);
+            line.setAttribute('x2', edge.x2);
+            line.setAttribute('y2', edge.y2);
+            line.setAttribute('stroke', '#334155');
+            line.setAttribute('stroke-width', '2');
+            line.setAttribute('stroke-linecap', 'round');
+            svg.appendChild(line);
+
+            // Edge bit badge (0 or 1)
+            const mx = (edge.x1 + edge.x2) / 2;
+            const my = (edge.y1 + edge.y2) / 2;
+
+            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bgRect.setAttribute('x', mx - 9);
+            bgRect.setAttribute('y', my - 9);
+            bgRect.setAttribute('width', 18);
+            bgRect.setAttribute('height', 18);
+            bgRect.setAttribute('rx', 4);
+            bgRect.setAttribute('fill', '#020617');
+            bgRect.setAttribute('stroke', '#1e293b');
+            bgRect.setAttribute('stroke-width', '1');
+            svg.appendChild(bgRect);
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', mx);
+            text.setAttribute('y', my + 4);
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('fill', '#94a3b8');
+            text.setAttribute('font-size', '11');
+            text.setAttribute('font-family', 'JetBrains Mono');
+            text.setAttribute('font-weight', 'bold');
+            text.textContent = edge.bit;
+            svg.appendChild(text);
+        });
+
+        // 2. Draw Nodes
+        nodesToRender.forEach(({ node, x, y }) => {
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+            if (node.letter) {
+                // Terminal Leaf Node (Letter)
+                const isKnown = node.status === 'known';
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '18');
+                circle.setAttribute('fill', isKnown ? '#f43f5e' : '#10b981'); // Rose vs Emerald
+                circle.setAttribute('stroke', isKnown ? '#fda4af' : '#6ee7b7');
+                circle.setAttribute('stroke-width', '2.5');
+                circle.setAttribute('class', 'filter drop-shadow-md');
+                g.appendChild(circle);
+
+                // Letter label
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', x);
+                label.setAttribute('y', y + 5);
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('fill', '#ffffff');
+                label.setAttribute('font-size', '14');
+                label.setAttribute('font-weight', '800');
+                label.textContent = node.letter;
+                g.appendChild(label);
+
+                // Binary Code tag underneath
+                const codeTag = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                codeTag.setAttribute('x', x);
+                codeTag.setAttribute('y', y + 33);
+                codeTag.setAttribute('text-anchor', 'middle');
+                codeTag.setAttribute('fill', isKnown ? '#fb7185' : '#34d399');
+                codeTag.setAttribute('font-size', '11');
+                codeTag.setAttribute('font-family', 'JetBrains Mono');
+                codeTag.setAttribute('font-weight', '700');
+                codeTag.textContent = node.code;
+                g.appendChild(codeTag);
+
+            } else {
+                // Intermediate junction node
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '5');
+                circle.setAttribute('fill', '#475569');
+                circle.setAttribute('stroke', '#1e293b');
+                circle.setAttribute('stroke-width', '2');
+                g.appendChild(circle);
+            }
+
+            svg.appendChild(g);
+        });
+    }
+
+    function solveTask() {
+        const resultContent = document.getElementById('result-content');
+        try {
+            const { known, alphabet } = parseInput();
+            const validationErr = validateKnownCodes(known);
+            if (validationErr) {
+                throw new Error(validationErr);
+            }
+
+            const mode = document.querySelector('input[name="mode"]:checked').value;
+
+            if (mode === 'letter') {
+                const targetLetter = document.getElementById('target-letter').value.trim().toUpperCase()[0];
+                const res = solveModeLetter(known, alphabet, targetLetter);
+
+                const solvedMap = {};
+                if (!res.isAlreadyKnown) {
+                    solvedMap[res.targetLetter] = res.code;
+                }
+
+                // Render explanation and answer
+                resultContent.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block">Кратчайший код для ${res.targetLetter}</span>
+                                <span class="text-2xl font-mono-code font-bold text-emerald-400">${res.code}</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-slate-400 block">Длина кода:</span>
+                                <span class="text-lg font-bold text-slate-200">${res.code.length} бит</span>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-slate-400 space-y-1.5 bg-slate-950/50 p-3 rounded-lg border border-slate-800/60">
+                            <p>✓ <strong class="text-slate-300">Прямое условие Фано:</strong> код <span class="font-mono-code text-emerald-400">${res.code}</span> не начинается с существующих кодов и не является их началом.</p>
+                            <p>✓ <strong class="text-slate-300">Ёмкость дерева:</strong> оставшихся свободных ветвей гарантированно достаточно для кодирования ещё ${res.unassignedOthersCount} букв алфавита.</p>
+                        </div>
+                    </div>
+                `;
+
+                const treeRoot = buildPrefixTree(known, solvedMap);
+                renderTreeSVG(treeRoot);
+
+            } else {
+                // Word mode
+                const targetWord = document.getElementById('target-word').value.trim().toUpperCase();
+                const res = solveModeWord(known, alphabet, targetWord);
+
+                let letterTags = '';
+                const sortedLetters = Object.entries(res.breakdown).sort((a,b) => b[1] - a[1]);
+
+                sortedLetters.forEach(([l, cnt]) => {
+                    const code = res.letterAssignments[l];
+                    const isNew = res.bestAssignment && res.bestAssignment[l];
+                    letterTags += `
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950 border border-slate-800 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 flex items-center justify-center rounded font-bold ${isNew ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">${l}</span>
+                                <span class="text-slate-400">${cnt} шт. × ${code.length} бит</span>
+                            </div>
+                            <span class="font-mono-code font-semibold ${isNew ? 'text-emerald-400' : 'text-rose-400'}">${code}</span>
+                        </div>
+                    `;
+                });
+
+                resultContent.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block">Минимальная длина слова «${res.word}»</span>
+                                <span class="text-3xl font-mono-code font-extrabold text-emerald-400">${res.totalLength}</span>
+                                <span class="text-xs text-slate-400 ml-1">двоичных знаков</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2 block">Распределение кодов по частоте:</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                ${letterTags}
+                            </div>
+                        </div>
+
+                        ${res.otherLettersCount > 0 ? `
+                        <div class="text-[11px] text-slate-500 bg-slate-950/40 p-2.5 rounded border border-slate-800">
+                            ℹ В дереве сохранён резерв веток для оставшихся ${res.otherLettersCount} букв алфавита, не вошедших в слово.
+                        </div>` : ''}
+                    </div>
+                `;
+
+                const treeRoot = buildPrefixTree(known, res.bestAssignment || {});
+                renderTreeSVG(treeRoot);
+            }
+
+        } catch (err) {
+            resultContent.innerHTML = `
+                <div class="p-4 rounded-xl bg-rose-950/40 border border-rose-800/80 text-rose-300 text-sm flex items-start gap-3">
+                    <svg class="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        <strong class="font-semibold block text-rose-200 mb-0.5">Внимание</strong>
+                        ${err.message}
+                    </div>
+                </div>
+            `;
+            document.getElementById('fano-svg').innerHTML = '';
+        }
+    }
+
+    // Initialize with Task 134 preset on load
+    window.addEventListener('DOMContentLoaded', () => {
+        loadPreset(134);
+    });
+</script>
+</body>
+</html>
