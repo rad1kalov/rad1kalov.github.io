@@ -156,6 +156,13 @@
         .play-btn { background: none; border: none; color: white; font-size: 16px; cursor: none; transition: transform 0.1s;}
         .play-btn:active { transform: scale(0.9); }
         .song-title { font-size: 12px; opacity: 0.8; max-width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Отключение кастомного курсора на мобилках */
+        @media (hover: none) and (pointer: coarse) {
+            body { cursor: auto; }
+            .cursor-dot, .cursor-trail { display: none !important; }
+            .links a, .play-btn { cursor: pointer; }
+        }
     </style>
 </head>
 <body>
@@ -409,6 +416,17 @@
 
         window.addEventListener('mouseleave', () => { cardRot.targetX = 0; cardRot.targetY = 0; });
 
+        function handleOrientation(e) {
+            if (!e.beta || !e.gamma) return;
+            
+            const maxA = CFG.tiltMaxAngle || 15;
+            let tiltX = (e.beta - 45) / 3; 
+            let tiltY = e.gamma / 3;
+            
+            cardRot.targetX = Math.max(-maxA, Math.min(maxA, -tiltX));
+            cardRot.targetY = Math.max(-maxA, Math.min(maxA, tiltY));
+        }
+
         function animLoop() {
             mouse.x += (mouse.rawX - mouse.x) * 0.15;
             mouse.y += (mouse.rawY - mouse.y) * 0.15;
@@ -462,12 +480,25 @@
             else { badge.style.display = 'none'; }
         }
 
-        function enterSite() {
+        async function enterSite() {
             const screen = document.getElementById('enter-screen');
             screen.style.opacity = '0';
             setTimeout(() => screen.style.display = 'none', 400);
             document.getElementById('bg-audio').play().catch(() => {});
             isPlaying = true;
+
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                try {
+                    const permission = await DeviceOrientationEvent.requestPermission();
+                    if (permission === 'granted') {
+                        window.addEventListener('deviceorientation', handleOrientation);
+                    }
+                } catch (e) { 
+                    console.error("Гироскоп недоступен:", e); 
+                }
+            } else {
+                window.addEventListener('deviceorientation', handleOrientation);
+            }
         }
 
         const audio = document.getElementById('bg-audio');
