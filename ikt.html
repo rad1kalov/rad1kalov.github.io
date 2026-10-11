@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЕГЭ Информатика | Инструменты</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white transition-colors duration-300">
+
+    <header class="w-full max-w-6xl mx-auto px-6 pt-16 pb-12 text-center md:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 text-sm font-semibold mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Умная подготовка
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+            Инструменты <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-indigo-500">ЕГЭ Информатика</span>
+        </h1>
+        <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
+            Набор интерактивных утилит и визуализаторов для автоматизации рутины и проверки ответов при подготовке к экзамену.
+        </p>
+    </header>
+
+    <main class="w-full max-w-6xl mx-auto px-6 pb-24 flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            
+            <!-- Карточка 1: Фано (Активная) -->
+            <a href="/fano/index.html" class="group relative bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:shadow-brand-500/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col h-full z-10">
+                <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-300 transform group-hover:scale-110">
+                    <svg class="w-32 h-32 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                </div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white mb-6 shadow-lg shadow-brand-500/30">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">Условие Фано (Задание 4)</h2>
+                <p class="text-slate-600 dark:text-slate-400 mb-6 flex-grow">
+                    Интерактивный решатель для поиска кратчайшего кодового слова. Строит бинарное дерево, проверяет условие Фано и неравенство Крафта.
+                </p>
+                <div class="inline-flex items-center text-brand-600 dark:text-brand-400 font-semibold group-hover:translate-x-1 transition-transform">
+                    Открыть инструмент
+                    <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+            </a>
+
+            <!-- Карточка 2: Заглушка (Таблицы истинности) -->
+            <div class="group relative bg-slate-100/50 dark:bg-slate-900/50 rounded-3xl p-8 border border-slate-200 border-dashed dark:border-slate-800 flex flex-col h-full cursor-not-allowed">
+                <div class="w-14 h-14 rounded-2xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 mb-6">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
+                </div>
+                <div class="flex justify-between items-start mb-3">
+                    <h2 class="text-2xl font-bold text-slate-500 dark:text-slate-400">Таблицы истинности</h2>
+                    <span class="px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-500 uppercase tracking-wider">В разработке</span>
+                </div>
+                <p class="text-slate-500 dark:text-slate-500 flex-grow">
+                    Построитель таблиц истинности для логических выражений (Задание 2). Автоматическое сопоставление переменных с фрагментом таблицы.
+                </p>
+            </div>
+
+            <!-- Карточка 3: Заглушка (Системы счисления) -->
+            <div class="group relative bg-slate-100/50 dark:bg-slate-900/50 rounded-3xl p-8 border border-slate-200 border-dashed dark:border-slate-800 flex flex-col h-full cursor-not-allowed">
+                <div class="w-14 h-14 rounded-2xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 mb-6">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
+                </div>
+                <div class="flex justify-between items-start mb-3">
+                    <h2 class="text-2xl font-bold text-slate-500 dark:text-slate-400">Системы счисления</h2>
+                    <span class="px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-500 uppercase tracking-wider">В разработке</span>
+                </div>
+                <p class="text-slate-500 dark:text-slate-500 flex-grow">
+                    Калькуляторы для заданий 8 и 14. Перевод чисел между системами счисления с пошаговым решением и комбинаторный перебор.
+                </p>
+            </div>
+
+            <!-- Карточка 4: Заглушка (Динамическое программирование) -->
+            <div class="group relative bg-slate-100/50 dark:bg-slate-900/50 rounded-3xl p-8 border border-slate-200 border-dashed dark:border-slate-800 flex flex-col h-full cursor-not-allowed">
+                <div class="w-14 h-14 rounded-2xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 mb-6">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                </div>
+                <div class="flex justify-between items-start mb-3">
+                    <h2 class="text-2xl font-bold text-slate-500 dark:text-slate-400">Графы и Динамика</h2>
+                    <span class="px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-500 uppercase tracking-wider">В разработке</span>
+                </div>
+                <p class="text-slate-500 dark:text-slate-500 flex-grow">
+                    Визуализатор графа вычислений для 23 задания. Покажет все возможные маршруты от стартового числа к конечному.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="w-full text-center py-8 text-slate-500 dark:text-slate-400 text-sm mt-auto">
+        <p>© 2026 Инструменты для подготовки к ЕГЭ. Все права защищены.</p>
+    </footer>
+
+</body>
+</html>
