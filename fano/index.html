@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGE Task 4: Fano Code Solver</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; font-weight: 600; }
+        .tab-inactive { color: #6b7280; }
+        .tab-inactive:hover { color: #374151; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-blue-600 p-6 text-white text-center">
+            <h1 class="text-2xl font-bold">Решатель Заданий №4 ЕГЭ (Условие Фано)</h1>
+            <p class="text-blue-100 text-sm mt-1">Поиск кратчайшего слова и минимальной длины сообщения</p>
+        </div>
+
+        <div class="flex border-b">
+            <button id="btn-mode-1" class="flex-1 py-4 text-center tab-active transition" onclick="switchMode(1)">
+                1. Кратчайшее слово для буквы
+            </button>
+            <button id="btn-mode-2" class="flex-1 py-4 text-center tab-inactive transition" onclick="switchMode(2)">
+                2. Минимальная длина слова
+            </button>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Известные коды (например: А:00, Б:01, В:100)</label>
+                <input type="text" id="known-codes" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="А:0100, Б:0101, В:1000...">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Алфавит (все используемые буквы, например: А,Б,В,Г,Д,Е,Ж)</label>
+                <input type="text" id="alphabet" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="А, Б, В, Г, Д, Е, Ж">
+            </div>
+
+            <div id="mode-1-inputs">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Буква, для которой ищем код</label>
+                <input type="text" id="target-letter" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Д" maxlength="1">
+            </div>
+
+            <div id="mode-2-inputs" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Кодируемое слово</label>
+                <input type="text" id="target-word" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ВВЕДЕНИЕ">
+            </div>
+
+            <button onclick="solve()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-md hover:bg-blue-700 transition shadow-md">
+                Решить
+            </button>
+
+            <div id="result-box" class="hidden mt-6 p-4 rounded-md bg-gray-50 border border-gray-200">
+                <h3 class="font-bold text-gray-800 mb-2">Результат:</h3>
+                <p id="result-text" class="text-gray-700 whitespace-pre-wrap"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 1;
+
+        function switchMode(mode) {
+            currentMode = mode;
+            if (mode === 1) {
+                document.getElementById('btn-mode-1').className = 'flex-1 py-4 text-center tab-active transition';
+                document.getElementById('btn-mode-2').className = 'flex-1 py-4 text-center tab-inactive transition';
+                document.getElementById('mode-1-inputs').classList.remove('hidden');
+                document.getElementById('mode-2-inputs').classList.add('hidden');
+            } else {
+                document.getElementById('btn-mode-2').className = 'flex-1 py-4 text-center tab-active transition';
+                document.getElementById('btn-mode-1').className = 'flex-1 py-4 text-center tab-inactive transition';
+                document.getElementById('mode-2-inputs').classList.remove('hidden');
+                document.getElementById('mode-1-inputs').classList.add('hidden');
+            }
+            document.getElementById('result-box').classList.add('hidden');
+        }
+
+        // Parse known codes from input
+        function parseKnownCodes(input) {
+            const map = new Map();
+            if (!input.trim()) return map;
+            const pairs = input.split(/[,;]/);
+            for (let pair of pairs) {
+                const parts = pair.split(/[-:=]/);
+                if (parts.length === 2) {
+                    map.set(parts[0].trim().toUpperCase(), parts[1].trim());
+                }
+            }
+            return map;
+        }
+
+        // Parse alphabet from input
+        function parseAlphabet(input) {
+            return input.split(/[,;\s]+/).map(s => s.trim().toUpperCase()).filter(s => s.length > 0);
+        }
+
+        // Check if string 'a' is prefix of 'b' or vice versa
+        function isFanoViolation(code1, code2) {
+            return code1.startsWith(code2) || code2.startsWith(code1);
+        }
+
+        // Check if a new code is valid against existing ones
+        function isValidFano(newCode, existingCodes) {
+            for (let code of existingCodes) {
+                if (isFanoViolation(newCode, code)) return false;
+            }
+            return true;
+        }
+
+        // Kraft-McMillan inequality check
+        function getKraftSum(codes) {
+            let sum = 0;
+            for (let code of codes) {
+                sum += Math.pow(2, -code.length);
+            }
+            return sum;
+        }
+
+        function solve() {
+            try {
+                const knownCodesStr = document.getElementById('known-codes').value;
+                const alphabetStr = document.getElementById('alphabet').value;
+                
+                const knownCodes = parseKnownCodes(knownCodesStr);
+                let alphabet = parseAlphabet(alphabetStr);
+                const existingCodeValues = Array.from(knownCodes.values());
+
+                if (alphabet.length === 0) throw new Error("Укажите алфавит.");
+
+                // Add known codes keys to alphabet if they are missing
+                for (let key of knownCodes.keys()) {
+                    if (!alphabet.includes(key)) alphabet.push(key);
+                }
+
+                if (currentMode === 1) {
+                    const targetLetter = document.getElementById('target-letter').value.trim().toUpperCase();
+                    if (!targetLetter) throw new Error("Укажите искомую букву.");
+                    if (!alphabet.includes(targetLetter)) alphabet.push(targetLetter);
+                    
+                    const neededExtraCodes = alphabet.length - knownCodes.size - 1; 
+
+                    let foundCode = null;
+                    const maxLen = 10;
+                    
+                    searchLoop:
+                    for (let len = 1; len <= maxLen; len++) {
+                        for (let val = 0; val < Math.pow(2, len); val++) {
+                            let bin = val.toString(2).padStart(len, '0');
+                            
+                            if (isValidFano(bin, existingCodeValues)) {
+                                let currentSum = getKraftSum([...existingCodeValues, bin]);
+                                
+                                // We can accept this code if there's space left for the rest
+                                if (currentSum < 1.0 || (currentSum === 1.0 && neededExtraCodes === 0)) {
+                                    // A more rigorous check could be added for exact topology, but Kraft is necessary and 
+                                    // sufficient for binary trees to allocate remaining lengths.
+                                    foundCode = bin;
+                                    break searchLoop;
+                                }
+                            }
+                        }
+                    }
+
+                    showResult(foundCode ? `Кратчайшее кодовое слово для буквы ${targetLetter}: ${foundCode}` : "Невозможно подобрать код.");
+
+                } else {
+                    const targetWord = document.getElementById('target-word').value.trim().toUpperCase();
+                    if (!targetWord) throw new Error("Укажите кодируемое слово.");
+                    
+                    // Simple DFS to assign lengths to remaining characters
+                    let unassignedLetters = alphabet.filter(l => !knownCodes.has(l));
+                    
+                    // Calculate frequencies in the word
+                    let freqs = {};
+                    for (let char of unassignedLetters) freqs[char] = 0;
+                    for (let char of targetWord) {
+                        if (unassignedLetters.includes(char)) freqs[char]++;
+                    }
+                    
+                    // Sort unassigned by frequency descending
+                    unassignedLetters.sort((a, b) => freqs[b] - freqs[a]);
+
+                    let minTotalWordLength = Infinity;
+                    let bestAssignments = {};
+
+                    // Base length from known codes
+                    let baseLength = 0;
+                    for (let char of targetWord) {
+                        if (knownCodes.has(char)) {
+                            baseLength += knownCodes.get(char).length;
+                        }
+                    }
+
+                    const knownSum = getKraftSum(existingCodeValues);
+
+                    // DFS to find optimal lengths
+                    function findOptimalLengths(index, currentSum, currentAssignments) {
+                        if (index === unassignedLetters.length) {
+                            let len = baseLength;
+                            for (let char of targetWord) {
+                                if (currentAssignments[char]) {
+                                    len += currentAssignments[char];
+                                }
+                            }
+                            if (len < minTotalWordLength) {
+                                minTotalWordLength = len;
+                                bestAssignments = {...currentAssignments};
+                            }
+                            return;
+                        }
+
+                        // Try lengths from 1 to 10
+                        for (let l = 1; l <= 10; l++) {
+                            let addition = Math.pow(2, -l);
+                            if (currentSum + addition <= 1.0) {
+                                currentAssignments[unassignedLetters[index]] = l;
+                                findOptimalLengths(index + 1, currentSum + addition, currentAssignments);
+                            }
+                        }
+                    }
+
+                    if (unassignedLetters.length > 0) {
+                        findOptimalLengths(0, knownSum, {});
+                        
+                        let explanation = `Минимальная длина слова "${targetWord}": ${minTotalWordLength} бит.\n\n`;
+                        explanation += `Оптимальные длины для оставшихся букв:\n`;
+                        for (let char of unassignedLetters) {
+                            explanation += `${char}: ${bestAssignments[char]} бит (частота: ${freqs[char]})\n`;
+                        }
+                        showResult(explanation);
+                    } else {
+                        showResult(`Минимальная длина слова "${targetWord}": ${baseLength} бит (все буквы уже известны).`);
+                    }
+                }
+            } catch (err) {
+                showResult("Ошибка: " + err.message);
+            }
+        }
+
+        function showResult(text) {
+            const resultBox = document.getElementById('result-box');
+            const resultText = document.getElementById('result-text');
+            resultText.textContent = text;
+            resultBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
