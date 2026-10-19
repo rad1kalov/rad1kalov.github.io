@@ -1,0 +1,622 @@
+/* ==========================================================================
+   Design Tokens & CSS Custom Properties
+   Linear / Apple Dark Minimalist Design System
+   ========================================================================== */
+
+:root {
+  /* Canvas & Atmospheric Gradients */
+  --bg-canvas: #090a0f;
+  --bg-canvas-subtle: #0d0e15;
+  --glow-ambient-1: rgba(99, 102, 241, 0.12); /* Linear Indigo Glow */
+  --glow-ambient-2: rgba(139, 92, 246, 0.09); /* Soft Violet Glow */
+  --glow-ambient-3: rgba(56, 189, 248, 0.05); /* Cyan Ambient Glow */
+
+  /* Glassmorphic Surfaces */
+  --surface-card: rgba(15, 17, 26, 0.72);
+  --surface-card-hover: rgba(20, 23, 36, 0.82);
+  --surface-chip: rgba(255, 255, 255, 0.04);
+  --surface-chip-hover: rgba(255, 255, 255, 0.08);
+  --surface-tag-design: rgba(168, 85, 247, 0.08);
+  --surface-tag-dev: rgba(59, 130, 246, 0.08);
+
+  /* Hairline Borders & Rim Highlights */
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-card-hover: rgba(255, 255, 255, 0.14);
+  --border-chip: rgba(255, 255, 255, 0.08);
+  --border-chip-hover: rgba(255, 255, 255, 0.22);
+  --rim-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+
+  /* Typography Colors */
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-accent: #818cf8;
+
+  /* Accent & Brand Colors */
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-glow: rgba(99, 102, 241, 0.35);
+  --accent-cta-start: #6366f1;
+  --accent-cta-end: #8b5cf6;
+  --accent-cta-glow: rgba(99, 102, 241, 0.35);
+  --accent-cta-glow-hover: rgba(99, 102, 241, 0.55);
+  --status-online: #10b981;
+  --status-online-glow: rgba(16, 185, 129, 0.45);
+
+  /* Shadows & Elevations */
+  --shadow-card: 0 0 0 1px var(--border-card), 0 24px 48px -12px rgba(0, 0, 0, 0.85);
+  --shadow-card-hover: 0 0 0 1px var(--border-card-hover), 0 32px 64px -16px rgba(0, 0, 0, 0.95);
+  --shadow-chip-hover: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+  /* Motion & Transitions */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+}
+
+/* ==========================================================================
+   CSS Reset & Base Enforcers
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background-color: var(--bg-canvas);
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ==========================================================================
+   Ambient Radial Glow Foundation
+   ========================================================================== */
+
+.canvas-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% -5%, var(--glow-ambient-1), transparent 70%),
+    radial-gradient(ellipse 55% 40% at 85% 95%, var(--glow-ambient-2), transparent 70%),
+    radial-gradient(ellipse 45% 30% at 10% 70%, var(--glow-ambient-3), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ==========================================================================
+   Centered Card Layout
+   ========================================================================== */
+
+.card-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 40px 16px;
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  background: var(--surface-card);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--border-card);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card), var(--rim-highlight);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: border-color var(--duration-normal) var(--ease-spring),
+              box-shadow var(--duration-normal) var(--ease-spring);
+}
+
+.card:hover {
+  border-color: var(--border-card-hover);
+  box-shadow: var(--shadow-card-hover), var(--rim-highlight);
+}
+
+/* Card Spotlight Border Highlight */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    380px circle at var(--mouse-x, -9999px) var(--mouse-y, -9999px),
+    rgba(255, 255, 255, 0.16),
+    transparent 65%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity var(--duration-normal) ease;
+  z-index: 1;
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .card {
+    background: #0f111a;
+  }
+}
+
+/* ==========================================================================
+   Profile Presentation Header
+   ========================================================================== */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+}
+
+.avatar-img {
+  width: 88px;
+  height: 88px;
+  border-radius: 22px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), var(--rim-highlight);
+  background-color: #12141e;
+}
+
+.status-indicator {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 16px;
+  height: 16px;
+  background-color: var(--status-online);
+  border: 3px solid #0f111a;
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--status-online-glow);
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.name-heading-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-name {
+  font-size: clamp(1.625rem, 4.5vw, 1.875rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.profile-handle {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--text-muted);
+}
+
+.meta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--text-secondary);
+  background: var(--surface-chip);
+  border: 1px solid var(--border-chip);
+}
+
+.chip-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Bio Paragraph
+   ========================================================================== */
+
+.profile-bio {
+  padding: 2px 0;
+}
+
+.bio-text {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Categorized Skill Badges
+   ========================================================================== */
+
+.skills-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skill-category {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.category-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+.category-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.badge-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  background: var(--surface-chip);
+  border: 1px solid var(--border-chip);
+  cursor: default;
+  user-select: none;
+  transition: transform var(--duration-fast) var(--ease-spring),
+              border-color var(--duration-fast) var(--ease-spring),
+              background var(--duration-fast) var(--ease-spring),
+              box-shadow var(--duration-fast) var(--ease-spring);
+  /* Crucial: no margin or padding change on hover to guarantee CLS = 0 */
+  will-change: transform;
+}
+
+.skill-badge:hover {
+  transform: translateY(-1px);
+  background: var(--surface-chip-hover);
+  border-color: var(--border-chip-hover);
+  box-shadow: var(--shadow-chip-hover);
+}
+
+.skill-badge.badge-design:hover {
+  border-color: rgba(168, 85, 247, 0.35);
+  background: var(--surface-tag-design);
+}
+
+.skill-badge.badge-dev:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: var(--surface-tag-dev);
+}
+
+/* ==========================================================================
+   Interactive Actions, Social Dock & Toast Feedback
+   ========================================================================== */
+
+/* Profile Actions Container */
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Primary CTA Button ("Заказать дизайн") */
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 14px 24px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent-cta-start) 0%, var(--accent-cta-end) 100%);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 20px var(--accent-cta-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform var(--duration-fast) var(--ease-spring),
+              box-shadow var(--duration-fast) var(--ease-spring),
+              border-color var(--duration-fast) ease;
+  cursor: pointer;
+  user-select: none;
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .cta-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px var(--accent-cta-glow-hover), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.cta-button:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.cta-icon {
+  flex-shrink: 0;
+  transition: transform var(--duration-fast) var(--ease-spring);
+}
+
+@media (hover: hover) {
+  .cta-button:hover .cta-icon {
+    transform: translateX(2px);
+  }
+}
+
+/* Social Dock Navigation */
+.social-dock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.dock-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 14px;
+  background: var(--surface-chip);
+  border: 1px solid var(--border-chip);
+  color: var(--text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform var(--duration-fast) var(--ease-spring),
+              background var(--duration-fast) ease,
+              border-color var(--duration-fast) ease,
+              color var(--duration-fast) ease,
+              box-shadow var(--duration-fast) ease;
+  user-select: none;
+  position: relative;
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .dock-item:hover {
+    transform: translateY(-2px);
+    background: var(--surface-chip-hover);
+    border-color: var(--border-chip-hover);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.dock-item:active {
+  transform: translateY(0) scale(0.94);
+}
+
+.dock-icon {
+  flex-shrink: 0;
+  transition: transform var(--duration-fast) ease;
+}
+
+/* Discord Copy Button Visual States */
+.btn-discord .icon-check {
+  display: none;
+}
+
+.btn-discord.copied {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #10b981;
+  transform: scale(1.05);
+}
+
+.btn-discord.copied .icon-ds {
+  display: none;
+}
+
+.btn-discord.copied .icon-check {
+  display: block;
+}
+
+/* Keyboard Accessibility Focus Visible Rings */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+.cta-button:focus-visible,
+.dock-item:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 3px;
+}
+
+/* Floating Toast Notification */
+#toast, .toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: rgba(18, 20, 29, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  padding: 8px 18px;
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 1px rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) ease,
+              transform var(--duration-fast) var(--ease-spring);
+  z-index: 1000;
+}
+
+#toast.visible, .toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+
+/* Mobile & Small Tablets (< 768px) */
+@media (max-width: 767px) {
+  .card-container {
+    padding: 24px 12px;
+    align-items: center;
+  }
+
+  .card {
+    border-radius: 20px;
+    padding: 24px 20px;
+    gap: 20px;
+  }
+
+  .avatar-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+  }
+}
+
+/* Ultra-compact screens (< 360px) */
+@media (max-width: 359px) {
+  .card-container {
+    padding: 16px 8px;
+  }
+
+  .card {
+    padding: 20px 14px;
+    border-radius: 18px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-info {
+    align-items: center;
+  }
+
+  .meta-chips {
+    justify-content: center;
+  }
+
+  .badge-group {
+    justify-content: center;
+  }
+
+  .category-title {
+    justify-content: center;
+  }
+}
+
+/* Landscape / Short Viewports (< 550px height) */
+@media (max-height: 550px) {
+  .card-container {
+    align-items: flex-start;
+    padding: 20px 12px;
+  }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .skill-badge:hover,
+  .cta-button:hover,
+  .dock-item:hover {
+    transform: none !important;
+  }
+
+  .card::before {
+    display: none !important;
+  }
+}
