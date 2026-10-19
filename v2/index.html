@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Радикал — UI/UX & Графический Дизайнер, Разработчик</title>
+  <meta name="description" content="Портфолио Радикала — 18-летнего UI/UX & графического дизайнера и программиста из Сочи. Разработка на Python, gLua, HTML/CSS, JS.">
+  <meta name="keywords" content="Радикал, UI/UX дизайнер, Графический дизайнер, Python, gLua, веб-разработчик, Сочи, заказать дизайн">
+  
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Радикал — UI/UX & Графический Дизайнер, Программист">
+  <meta property="og:description" content="Минималистичный дизайн, сильный визуал и чистый код. UI/UX, брендинг, Python, gLua, Web.">
+  <meta property="og:url" content="https://t.me/m/SK5JK1LAMzky">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%230b0d14'/><text x='50%' y='55%' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='800' font-size='56' fill='%238b5cf6'>R</text></svg>">
+</head>
+<body>
+  <!-- Ambient Glow Background Canvas / Orbs -->
+  <div class="ambient-glow" aria-hidden="true">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="site-header" id="header">
+    <div class="header-container">
+      <a href="#hero" class="brand-logo" aria-label="Радикал - Главная">
+        <span class="logo-symbol">R</span>
+        <span class="logo-text">Радикал<span class="logo-dot">.</span></span>
+      </a>
+
+      <nav class="nav-desktop" aria-label="Основное меню">
+        <ul class="nav-list">
+          <li><a href="#about" class="nav-link">Обо мне</a></li>
+          <li><a href="#services" class="nav-link">Направления</a></li>
+          <li><a href="#portfolio" class="nav-link">Проекты</a></li>
+          <li><a href="#skills" class="nav-link">Стек</a></li>
+          <li><a href="#contacts" class="nav-link">Контакты</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm glow-button">
+          <span class="btn-text">Заказать дизайн</span>
+          <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+
+        <button class="burger-menu-btn" id="burgerBtn" aria-label="Открыть мобильное меню" aria-expanded="false">
+          <span class="burger-bar"></span>
+          <span class="burger-bar"></span>
+          <span class="burger-bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+    <div class="mobile-drawer-content">
+      <nav class="mobile-nav" aria-label="Мобильное меню">
+        <ul class="mobile-nav-list">
+          <li><a href="#about" class="mobile-nav-link">Обо мне</a></li>
+          <li><a href="#services" class="mobile-nav-link">Направления</a></li>
+          <li><a href="#portfolio" class="mobile-nav-link">Проекты</a></li>
+          <li><a href="#skills" class="mobile-nav-link">Стек технологий</a></li>
+          <li><a href="#contacts" class="mobile-nav-link">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="mobile-drawer-footer">
+        <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-block glow-button">
+          <span>Заказать дизайн</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="section hero-section" id="hero">
+      <div class="container hero-container">
+        
+        <div class="hero-badge-wrapper">
+          <div class="status-badge">
+            <span class="status-pulse"></span>
+            <span class="status-text">Открыт к заказам и проектам</span>
+            <span class="badge-separator">•</span>
+            <span class="status-location">Сочи, 18 лет 🌴</span>
+          </div>
+        </div>
+
+        <h1 class="hero-title">
+          Слияние эстетики <span class="gradient-text">UI/UX дизайна</span><br class="desktop-br">
+          и мощи <span class="code-font text-highlight">&lt;чистого кода/&gt;</span>
+        </h1>
+
+        <p class="hero-description">
+          Привет, я <strong class="text-white">Радикал</strong>. Разрабатываю продуманные пользовательские интерфейсы, современную графику и пишу надежный код на 
+          <span class="chip chip-python">Python</span>, 
+          <span class="chip chip-lua">gLua</span> и 
+          <span class="chip chip-web">HTML/CSS/JS</span>.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg glow-button main-cta-btn">
+            <span class="btn-glow-layer"></span>
+            <span class="btn-text">Заказать дизайн</span>
+            <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2L11 13"></path>
+              <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+            </svg>
+          </a>
+          <a href="#portfolio" class="btn btn-secondary btn-lg">
+            <span>Смотреть работы</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Social Quick Links Bar -->
+        <div class="hero-socials">
+          <span class="socials-label">Связаться и подписаться:</span>
+          <div class="social-links-grid">
+            <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="social-pill" title="Telegram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+              </svg>
+              <span>Telegram</span>
+            </a>
+
+            <a href="https://github.com/rad1kal" target="_blank" rel="noopener noreferrer" class="social-pill" title="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+
+            <button type="button" class="social-pill copy-btn" data-copy="rad1kal" title="Нажмите, чтобы скопировать Discord тег">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+              <span>Discord: rad1kal</span>
+            </button>
+
+            <a href="https://vk.com" target="_blank" rel="noopener noreferrer" class="social-pill" title="VKontakte">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.684 0H8.316C3.592 0 0 3.592 0 8.316v7.368C0 20.408 3.592 24 8.316 24h7.368C20.408 24 24 20.408 24 15.684V8.316C24 3.592 20.408 0 15.684 0zm4.27 17.514h-1.954c-.74 0-.967-.588-2.298-1.92-1.157-1.13-1.67-1.278-1.954-1.278-.4 0-.515.116-.515.672v1.78c0 .474-.15.746-1.38.746-2.036 0-4.298-1.236-5.894-3.535-2.404-3.414-3.07-5.99-3.07-6.52 0-.236.09-.456.516-.456h1.954c.475 0 .653.218.835.733.906 2.658 2.43 4.987 3.056 4.987.237 0 .346-.108.346-.704v-2.73c-.07-.946-.554-1.026-.554-1.365 0-.16.136-.32.355-.32h2.2c.307 0 .425.16.425.518v3.69c0 .4.178.536.297.536.237 0 .435-.137.87-1.01 1.03-2.08 1.76-4.273 1.76-4.273.138-.277.356-.425.83-.425h1.954c.594 0 .723.307.594.733-.238.99-2.316 3.97-2.316 3.97-.2.336-.277.494 0 .87.396.534 1.722 1.682 2.376 2.693.495.752.277 1.148-.198 1.148z"/>
+              </svg>
+              <span>VKontakte</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Metrics / Highlights Cards -->
+        <div class="hero-stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-purple">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">UI/UX + Графика</span>
+              <span class="stat-label">Проектирование и визуал</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-blue">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">Python & gLua</span>
+              <span class="stat-label">Боты, скрипты, геймдев</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-cyan">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                <path d="M2 12h20"></path>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">HTML, CSS & JS</span>
+              <span class="stat-label">Адаптивная чистая вёрстка</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap icon-emerald">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">Сочи 🌴 18 лет</span>
+              <span class="stat-label">Энергия, гибкость, фокус</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="section about-section" id="about">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">// Обо мне</span>
+          <h2 class="section-title">Дизайнер, который понимает код.<br>Разработчик с чувством стиля.</h2>
+          <p class="section-subtitle">
+            Большинство дизайнеров не знают, как их макеты будут работать в реальности, а программисты часто пренебрегают эстетикой. 
+            Я объединяю обе эти дисциплины.
+          </p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-card glass-panel">
+            <div class="about-badge">UI & UX / Graphic</div>
+            <h3 class="about-card-title">Дизайн с акцентом на результат</h3>
+            <p class="about-card-text">
+              Создаю интерфейсы, в которых удобно ориентироваться пользователю, и графику, которая привлекает внимание. 
+              От аккуратных веб-сервисов и лендингов до полноценной айдентики брендов, оформления игровых сообществ и соцсетей.
+            </p>
+            <ul class="about-list">
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Эргономика, сетки, дизайн-системы и адаптивность под мобилки</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Логотипы, рекламная графика, баннеры и фирменные стили</span>
+              </li>
+              <li>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Игровой UI / HUD для Garry's Mod и кастомных лаунчеров</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="about-card glass-panel">
+            <div class="about-badge badge-code">Code & Logic</div>
+            <h3 class="about-card-title">Разработка и автоматизация</h3>
+            <p class="about-card-text">
+              Пишу функциональный код. Разрабатываю телеграм-ботов и парсеры на <strong>Python</strong>, 
+              пишу кастомные аддоны, HUD'ы и игровые скрипты на <strong>gLua</strong> (Garry's Mod), 
+              а также верстаю отзывчивые сайты на <strong>HTML5, CSS3 и JavaScript</strong>.
+            </p>
+            
+            <!-- Code terminal snippet preview -->
+            <div class="code-terminal">
+              <div class="terminal-header">
+                <div class="terminal-dots">
+                  <span class="dot dot-red"></span>
+                  <span class="dot dot-yellow"></span>
+                  <span class="dot dot-green"></span>
+                </div>
+                <span class="terminal-filename">radikal_core.py</span>
+              </div>
+              <div class="terminal-body code-font">
+                <div class="line"><span class="kwd">class</span> <span class="cls">RadikalDev</span>:</div>
+                <div class="line">&nbsp;&nbsp;<span class="kwd">def</span> <span class="fn">__init__</span>(self):</div>
+                <div class="line">&nbsp;&nbsp;&nbsp;&nbsp;self.location = <span class="str">"Sochi, Russia"</span></div>
+                <div class="line">&nbsp;&nbsp;&nbsp;&nbsp;self.passions = [<span class="str">"UI/UX"</span>, <span class="str">"Python"</span>, <span class="str">"gLua"</span>]</div>
+                <div class="line">&nbsp;&nbsp;&nbsp;&nbsp;self.ready_to_work = <span class="kwd">True</span></div>
+                <div class="line">&nbsp;</div>
+                <div class="line">&nbsp;&nbsp;<span class="kwd">async def</span> <span class="fn">build_experience</span>(self, task):</div>
+                <div class="line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">return</span> <span class="str">f"✨ {task.name} done with perfection"</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SERVICES / WHAT I DO -->
+    <section class="section services-section" id="services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">// Направления работы</span>
+          <h2 class="section-title">Чем я могу помочь вашему проекту</h2>
+          <p class="section-subtitle">
+            Комплексный подход: от первоначального эскиза и визуальной айдентики до рабочего кода и запуска.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          
+          <div class="service-card glass-panel">
+            <div class="service-number">01</div>
+            <div class="service-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <h3 class="service-title">UI/UX Дизайн сайтов и сервисов</h3>
+            <p class="service-desc">
+              Проектирование чистых, удобных и конверсионных интерфейсов. Лендинги, многостраничные сайты, веб-сервисы, панели управления и адаптация под мобильные устройства.
+            </p>
+            <div class="service-tags">
+              <span>Figma</span>
+              <span>Wireframing</span>
+              <span>Mobile-first</span>
+              <span>Design System</span>
+            </div>
+            <div class="service-cta">
+              <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="link-arrow">
+                Заказать UI/UX
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="service-card glass-panel">
+            <div class="service-number">02</div>
+            <div class="service-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+              </svg>
+            </div>
+            <h3 class="service-title">Графический дизайн & Брендинг</h3>
+            <p class="service-desc">
+              Создание запоминающегося визуального образа. Логотипы, фирменный стиль, оформление групп VK, каналов Telegram, креативы для таргета и баннеры.
+            </p>
+            <div class="service-tags">
+              <span>Логотипы</span>
+              <span>Айдентика</span>
+              <span>Баннеры</span>
+              <span>Оформление ТГ/ВК</span>
+            </div>
+            <div class="service-cta">
+              <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="link-arrow">
+                Заказать графику
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="service-card glass-panel">
+            <div class="service-number">03</div>
+            <div class="service-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 17l6-6-6-6m8 14h8"></path>
+              </svg>
+            </div>
+            <h3 class="service-title">Python Разработка & Боты</h3>
+            <p class="service-desc">
+              Многофункциональные Telegram-боты любой сложности, интеграции с API, скрипты автоматизации рутины, парсеры данных и серверные решения.
+            </p>
+            <div class="service-tags">
+              <span>Telegram Боты</span>
+              <span>Aiogram</span>
+              <span>Парсинг</span>
+              <span>Автоматизация</span>
+            </div>
+            <div class="service-cta">
+              <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="link-arrow">
+                Заказать бота
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="service-card glass-panel">
+            <div class="service-number">04</div>
+            <div class="service-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </div>
+            <h3 class="service-title">gLua & Garry's Mod Скриптинг</h3>
+            <p class="service-desc">
+              Разработка аддонов для серверов Garry's Mod: стильные кастомные HUD'ы, интерфейсы на Derma, игровая механика, интеграции баз данных и оптимизация.
+            </p>
+            <div class="service-tags">
+              <span>gLua</span>
+              <span>Derma UI</span>
+              <span>Custom HUD</span>
+              <span>GMod Addons</span>
+            </div>
+            <div class="service-cta">
+              <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="link-arrow">
+                Заказать скрипт
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="service-card glass-panel">
+            <div class="service-number">05</div>
+            <div class="service-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <h3 class="service-title">Фронтенд Вёрстка (HTML/CSS/JS)</h3>
+            <p class="service-desc">
+              Быстрая, адаптивная и чистая вёрстка макетов. Идеальное отображение на смартфонах, планшетах и мониторах высокой четкости с плавными анимациями.
+            </p>
+            <div class="service-tags">
+              <span>Responsive</span>
+              <span>Mobile-First</span>
+              <span>Vanilla JS</span>
+              <span>Animations</span>
+            </div>
+            <div class="service-cta">
+              <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="link-arrow">
+                Заказать вёрстку
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="service-card glass-panel service-card-highlight">
+            <div class="service-number">06</div>
+            <div class="service-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+              </svg>
+            </div>
+            <h3 class="service-title">Комплексный проект под ключ</h3>
+            <p class="service-desc">
+              Создание продукта с нуля: разработка концепции, дизайн UI/UX, отрисовка графических элементов, вёрстка сайта или настройка софта.
+            </p>
+            <div class="service-tags">
+              <span>Дизайн + Код</span>
+              <span>Полный цикл</span>
+              <span>Поддержка</span>
+            </div>
+            <div class="service-cta">
+              <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm glow-button">
+                <span>Обсудить задачу</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO SECTION -->
+    <section class="section portfolio-section" id="portfolio">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">// Портфолио & Кейсы</span>
+          <h2 class="section-title">Избранные проекты и наработки</h2>
+          <p class="section-subtitle">
+            Примеры работ в сфере дизайна интерфейсов, брендинга и программирования.
+          </p>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="portfolio-filter-bar">
+          <button class="filter-btn active" data-filter="all">Все проекты</button>
+          <button class="filter-btn" data-filter="uiux">UI/UX Дизайн</button>
+          <button class="filter-btn" data-filter="graphic">Графика & Брендинг</button>
+          <button class="filter-btn" data-filter="code">Разработка (Python / gLua)</button>
+        </div>
+
+        <div class="portfolio-grid" id="portfolioGrid">
+          
+          <!-- Project 1: UI/UX App -->
+          <article class="portfolio-card glass-panel" data-category="uiux">
+            <div class="portfolio-preview preview-neo-ui">
+              <div class="preview-mockup">
+                <div class="mockup-header">
+                  <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
+                </div>
+                <div class="mockup-body">
+                  <div class="mockup-chart"></div>
+                  <div class="mockup-lines">
+                    <span class="line-sm"></span>
+                    <span class="line-md"></span>
+                    <span class="line-lg"></span>
+                  </div>
+                </div>
+              </div>
+              <span class="preview-badge">UI/UX</span>
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-category">Интерфейс & Mobile</div>
+              <h3 class="portfolio-title">NeonAnalytics — FinTech & Crypto Dashboard</h3>
+              <p class="portfolio-desc">
+                Современная тёмная аналитическая панель для трейдинга с продуманной информационной иерархией, интерактивными графиками и быстрыми транзакциями.
+              </p>
+              <div class="portfolio-meta">
+                <span class="meta-tag">Figma</span>
+                <span class="meta-tag">UI/UX</span>
+                <span class="meta-tag">Design System</span>
+              </div>
+              <div class="portfolio-action">
+                <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn-text-link">
+                  Заказать похожий проект →
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 2: Graphic Design & Branding -->
+          <article class="portfolio-card glass-panel" data-category="graphic">
+            <div class="portfolio-preview preview-branding">
+              <div class="preview-brand-element">
+                <div class="brand-shape"></div>
+                <div class="brand-text">RADIKAL<span>STUDIO</span></div>
+              </div>
+              <span class="preview-badge">Брендинг</span>
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-category">Айдентика & Стиль</div>
+              <h3 class="portfolio-title">CyberPulse Identity & Social Media Pack</h3>
+              <p class="portfolio-desc">
+                Комплексная визуальная концепция для медиа-проекта: логотип, оформление каналов Telegram, баннеры для постов, рекламные плакаты и мерч.
+              </p>
+              <div class="portfolio-meta">
+                <span class="meta-tag">Photoshop</span>
+                <span class="meta-tag">Illustrator</span>
+                <span class="meta-tag">Identity</span>
+              </div>
+              <div class="portfolio-action">
+                <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn-text-link">
+                  Заказать дизайн айдентики →
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 3: Python Telegram Bot -->
+          <article class="portfolio-card glass-panel" data-category="code">
+            <div class="portfolio-preview preview-terminal">
+              <div class="code-snippet-small code-font">
+                <span class="code-comment"># Async Telegram Bot Engine</span><br>
+                <span class="code-kw">@dp.message</span>(Command(<span class="code-str">"stats"</span>))<br>
+                <span class="code-kw">async def</span> <span class="code-func">send_report</span>(msg):<br>
+                &nbsp;&nbsp;data = <span class="code-kw">await</span> db.fetch_user()<br>
+                &nbsp;&nbsp;<span class="code-kw">await</span> msg.answer(f<span class="code-str">"User: {data}"</span>)
+              </div>
+              <span class="preview-badge badge-code">Python</span>
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-category">Автоматизация & Бэкенд</div>
+              <h3 class="portfolio-title">Multi-Service Telegram Bot & Shop Engine</h3>
+              <p class="portfolio-desc">
+                Асинхронный бот на Python (Aiogram 3) с приемом платежей, базой данных SQLite/PostgreSQL, реферальной системой и удобной админ-панелью.
+              </p>
+              <div class="portfolio-meta">
+                <span class="meta-tag">Python</span>
+                <span class="meta-tag">Aiogram</span>
+                <span class="meta-tag">Asyncio</span>
+                <span class="meta-tag">SQL</span>
+              </div>
+              <div class="portfolio-action">
+                <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn-text-link">
+                  Заказать разработку бота →
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 4: gLua / Garry's Mod UI -->
+          <article class="portfolio-card glass-panel" data-category="code">
+            <div class="portfolio-preview preview-glua">
+              <div class="glua-mock-hud">
+                <div class="hud-hp-bar"><span class="hud-fill"></span><span class="hud-text">HP: 100%</span></div>
+                <div class="hud-armor-bar"><span class="hud-fill-armor"></span><span class="hud-text">ARMOR: 85%</span></div>
+                <div class="hud-weapon">АК-47 [30/90]</div>
+              </div>
+              <span class="preview-badge badge-lua">gLua</span>
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-category">Garry's Mod & UI Derma</div>
+              <h3 class="portfolio-title">Custom Sci-Fi HUD & Inventory System</h3>
+              <p class="portfolio-desc">
+                Плавный и оптимизированный HUD интерфейс на gLua с кастомной отрисовкой, плавными анимациями Derma, индикаторами состояния и инвентарем.
+              </p>
+              <div class="portfolio-meta">
+                <span class="meta-tag">gLua</span>
+                <span class="meta-tag">Garry's Mod</span>
+                <span class="meta-tag">Derma UI</span>
+              </div>
+              <div class="portfolio-action">
+                <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn-text-link">
+                  Заказать gLua скрипт →
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 5: Responsive Landing Page -->
+          <article class="portfolio-card glass-panel" data-category="uiux">
+            <div class="portfolio-preview preview-web">
+              <div class="mockup-browser">
+                <div class="browser-top"><span class="b-dot"></span><span class="b-dot"></span><span class="b-dot"></span></div>
+                <div class="browser-content">
+                  <div class="b-hero-line"></div>
+                  <div class="b-grid"><div></div><div></div><div></div></div>
+                </div>
+              </div>
+              <span class="preview-badge">Web / UI</span>
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-category">Веб-дизайн & Вёрстка</div>
+              <h3 class="portfolio-title">Modern Dark SaaS Promo Landing</h3>
+              <p class="portfolio-desc">
+                Минималистичный лендинг для софтверного продукта. Высокая скорость загрузки (100/100 PageSpeed), микро-анимации и чистый адаптивный код.
+              </p>
+              <div class="portfolio-meta">
+                <span class="meta-tag">HTML5 / CSS3</span>
+                <span class="meta-tag">JavaScript</span>
+                <span class="meta-tag">Responsive</span>
+              </div>
+              <div class="portfolio-action">
+                <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn-text-link">
+                  Заказать лендинг под ключ →
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 6: Graphic Social Identity -->
+          <article class="portfolio-card glass-panel" data-category="graphic">
+            <div class="portfolio-preview preview-banner">
+              <div class="banner-abstract">
+                <span class="neon-ring"></span>
+                <span class="banner-title">GAME SERVER PACK</span>
+              </div>
+              <span class="preview-badge">Графика</span>
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-category">Игровая графика</div>
+              <h3 class="portfolio-title">Комплексный арт-пак для игрового сервера</h3>
+              <p class="portfolio-desc">
+                Логотип, шапки для Discord и VK, иконки рангов, превью для донат-магазина и анимированные баннеры для мониторингов.
+              </p>
+              <div class="portfolio-meta">
+                <span class="meta-tag">Figma</span>
+                <span class="meta-tag">Графика</span>
+                <span class="meta-tag">Арт</span>
+              </div>
+              <div class="portfolio-action">
+                <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn-text-link">
+                  Заказать оформление сообщества →
+                </a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="portfolio-footer-cta">
+          <p class="portfolio-footer-text">Нужно что-то уникальное под вашу задачу?</p>
+          <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary glow-button">
+            <span>Обсудить индивидуальный проект</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SKILLS MATRIX SECTION -->
+    <section class="section skills-section" id="skills">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">// Технологии & Инструменты</span>
+          <h2 class="section-title">Мой практический стек</h2>
+          <p class="section-subtitle">
+            Только те инструменты и языки, которыми я владею и применяю на реальных заказах.
+          </p>
+        </div>
+
+        <div class="skills-categories-grid">
+          
+          <!-- Design Column -->
+          <div class="skill-category-card glass-panel">
+            <div class="cat-header">
+              <div class="cat-icon icon-purple">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+              </div>
+              <div>
+                <h3 class="cat-title">Дизайн & Креатив</h3>
+                <span class="cat-subtitle">Интерфейсы и графика</span>
+              </div>
+            </div>
+
+            <div class="skill-chips-list">
+              <div class="skill-badge"><span class="badge-dot"></span> Figma</div>
+              <div class="skill-badge"><span class="badge-dot"></span> UI/UX Архитектура</div>
+              <div class="skill-badge"><span class="badge-dot"></span> Adobe Photoshop</div>
+              <div class="skill-badge"><span class="badge-dot"></span> Adobe Illustrator</div>
+              <div class="skill-badge"><span class="badge-dot"></span> Адаптивный дизайн</div>
+              <div class="skill-badge"><span class="badge-dot"></span> Дизайн-системы & UI Kit</div>
+              <div class="skill-badge"><span class="badge-dot"></span> Логотипы & Брендинг</div>
+              <div class="skill-badge"><span class="badge-dot"></span> Типографика & Сетки</div>
+            </div>
+          </div>
+
+          <!-- Programming Column -->
+          <div class="skill-category-card glass-panel">
+            <div class="cat-header">
+              <div class="cat-icon icon-blue">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              </div>
+              <div>
+                <h3 class="cat-title">Разработка & Код</h3>
+                <span class="cat-subtitle">Скрипты, логика и бэкенд</span>
+              </div>
+            </div>
+
+            <div class="skill-chips-list">
+              <div class="skill-badge"><span class="badge-dot dot-blue"></span> Python (AsyncIO)</div>
+              <div class="skill-badge"><span class="badge-dot dot-blue"></span> Aiogram 3.x (TG Боты)</div>
+              <div class="skill-badge"><span class="badge-dot dot-cyan"></span> gLua (Garry's Mod Lua)</div>
+              <div class="skill-badge"><span class="badge-dot dot-cyan"></span> Derma UI & VGUI</div>
+              <div class="skill-badge"><span class="badge-dot dot-yellow"></span> JavaScript (ES6+ / DOM)</div>
+              <div class="skill-badge"><span class="badge-dot dot-orange"></span> HTML5 / Semantic Web</div>
+              <div class="skill-badge"><span class="badge-dot dot-purple"></span> Modern CSS3 / Flex / Grid</div>
+              <div class="skill-badge"><span class="badge-dot dot-emerald"></span> Git & GitHub</div>
+            </div>
+          </div>
+
+          <!-- Approach Column -->
+          <div class="skill-category-card glass-panel">
+            <div class="cat-header">
+              <div class="cat-icon icon-emerald">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              </div>
+              <div>
+                <h3 class="cat-title">Принципы работы</h3>
+                <span class="cat-subtitle">Надежность и сервис</span>
+              </div>
+            </div>
+
+            <div class="skill-chips-list">
+              <div class="skill-badge"><span class="badge-dot dot-emerald"></span> Быстрый отклик 24/7</div>
+              <div class="skill-badge"><span class="badge-dot dot-emerald"></span> Четкое соблюдение дедлайнов</div>
+              <div class="skill-badge"><span class="badge-dot dot-emerald"></span> Адекватные правки</div>
+              <div class="skill-badge"><span class="badge-dot dot-emerald"></span> Исходники под ключ</div>
+              <div class="skill-badge"><span class="badge-dot dot-emerald"></span> Чистый, читаемый код</div>
+              <div class="skill-badge"><span class="badge-dot dot-emerald"></span> Индивидуальный подход</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW PROCESS -->
+    <section class="section workflow-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">// Процесс</span>
+          <h2 class="section-title">Как строится работа</h2>
+          <p class="section-subtitle">
+            Прозрачный и комфортный пайплайн от первого сообщения до готового результата.
+          </p>
+        </div>
+
+        <div class="workflow-steps-grid">
+          
+          <div class="step-card glass-panel">
+            <div class="step-badge">Шаг 01</div>
+            <h3 class="step-title">Обсуждение & ТЗ</h3>
+            <p class="step-desc">
+              Вы делитесь задачей, референсами или идеей. Обсуждаем формат, дедлайн и стоимость проекта.
+            </p>
+          </div>
+
+          <div class="step-card glass-panel">
+            <div class="step-badge">Шаг 02</div>
+            <h3 class="step-title">Концепт / Прототип</h3>
+            <p class="step-desc">
+              Создаю первичный макет, структуру или каркас скрипта. Согласовываем направление до финальной отрисовки.
+            </p>
+          </div>
+
+          <div class="step-card glass-panel">
+            <div class="step-badge">Шаг 03</div>
+            <h3 class="step-title">Реализация & Детали</h3>
+            <p class="step-desc">
+              Прорабатываю финальный визуал, все экраны, адаптивность или пишу и тестирую чистый код.
+            </p>
+          </div>
+
+          <div class="step-card glass-panel">
+            <div class="step-badge">Шаг 04</div>
+            <h3 class="step-title">Правки & Сдача</h3>
+            <p class="step-desc">
+              Вносим необходимые корректировки. Вы получаете все готовые исходники (Figma, .py, .lua, .html/.css).
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CALL TO ACTION BANNER -->
+    <section class="section cta-section">
+      <div class="container">
+        <div class="cta-banner glass-panel">
+          <div class="cta-glow-bg"></div>
+          <div class="cta-content">
+            <span class="cta-tag">Есть идея или готовая задача?</span>
+            <h2 class="cta-title">Давайте создадим крутой проект вместе</h2>
+            <p class="cta-subtitle">
+              Нужен стильный дизайн сайта, айдентика, Telegram-бот или gLua скрипт? Напишите мне в Telegram — отвечу быстро и предложу лучшее решение.
+            </p>
+            <div class="cta-actions">
+              <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg glow-button">
+                <span class="btn-text">Заказать дизайн в Telegram</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><path d="M22 2L15 22L11 13L2 9L22 2Z"></path></svg>
+              </a>
+              <button type="button" class="btn btn-secondary btn-lg copy-btn" data-copy="https://t.me/m/SK5JK1LAMzky">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Скопировать ссылку</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTS SECTION -->
+    <section class="section contacts-section" id="contacts">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">// Контакты</span>
+          <h2 class="section-title">Как со мной связаться</h2>
+          <p class="section-subtitle">
+            Выберите удобный канал связи. Я всегда на связи в сети.
+          </p>
+        </div>
+
+        <div class="contacts-grid">
+          
+          <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="contact-card glass-panel">
+            <div class="contact-icon icon-tg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+              </svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-label">Telegram (Основной контакт)</span>
+              <span class="contact-value">@m/SK5JK1LAMzky</span>
+              <span class="contact-desc">Быстрый ответ для заказа дизайна и кода</span>
+            </div>
+            <div class="contact-arrow">→</div>
+          </a>
+
+          <a href="https://github.com/rad1kal" target="_blank" rel="noopener noreferrer" class="contact-card glass-panel">
+            <div class="contact-icon icon-gh">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+              </svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-label">GitHub Профиль</span>
+              <span class="contact-value">github.com/rad1kal</span>
+              <span class="contact-desc">Репозитории, скрипты и открытый код</span>
+            </div>
+            <div class="contact-arrow">→</div>
+          </a>
+
+          <div class="contact-card glass-panel copy-card" data-copy="rad1kal">
+            <div class="contact-icon icon-discord">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-label">Discord Тег</span>
+              <span class="contact-value">rad1kal</span>
+              <span class="contact-desc">Нажмите для быстрого копирования</span>
+            </div>
+            <div class="contact-badge-copy">Скопировать</div>
+          </div>
+
+          <a href="https://vk.com" target="_blank" rel="noopener noreferrer" class="contact-card glass-panel">
+            <div class="contact-icon icon-vk">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.684 0H8.316C3.592 0 0 3.592 0 8.316v7.368C0 20.408 3.592 24 8.316 24h7.368C20.408 24 24 20.408 24 15.684V8.316C24 3.592 20.408 0 15.684 0zm4.27 17.514h-1.954c-.74 0-.967-.588-2.298-1.92-1.157-1.13-1.67-1.278-1.954-1.278-.4 0-.515.116-.515.672v1.78c0 .474-.15.746-1.38.746-2.036 0-4.298-1.236-5.894-3.535-2.404-3.414-3.07-5.99-3.07-6.52 0-.236.09-.456.516-.456h1.954c.475 0 .653.218.835.733.906 2.658 2.43 4.987 3.056 4.987.237 0 .346-.108.346-.704v-2.73c-.07-.946-.554-1.026-.554-1.365 0-.16.136-.32.355-.32h2.2c.307 0 .425.16.425.518v3.69c0 .4.178.536.297.536.237 0 .435-.137.87-1.01 1.03-2.08 1.76-4.273 1.76-4.273.138-.277.356-.425.83-.425h1.954c.594 0 .723.307.594.733-.238.99-2.316 3.97-2.316 3.97-.2.336-.277.494 0 .87.396.534 1.722 1.682 2.376 2.693.495.752.277 1.148-.198 1.148z"/>
+              </svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-label">VKontakte</span>
+              <span class="contact-value">ВКонтакте</span>
+              <span class="contact-desc">Связь и просмотр новостей</span>
+            </div>
+            <div class="contact-arrow">→</div>
+          </a>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <a href="#hero" class="brand-logo">
+          <span class="logo-symbol">R</span>
+          <span class="logo-text">Радикал<span class="logo-dot">.</span></span>
+        </a>
+        <p class="footer-tagline">18-летний дизайнер & программист из Сочи.<br>UI/UX, графика, Python, gLua, Web.</p>
+      </div>
+
+      <div class="footer-nav">
+        <span class="footer-heading">Навигация</span>
+        <ul>
+          <li><a href="#about">Обо мне</a></li>
+          <li><a href="#services">Направления</a></li>
+          <li><a href="#portfolio">Кейсы</a></li>
+          <li><a href="#skills">Стек</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-cta-col">
+        <span class="footer-heading">Сотрудничество</span>
+        <p>Готов обсудить задачу прямо сейчас</p>
+        <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm glow-button">
+          <span>Заказать дизайн</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© 2026 Радикал. Все права защищены. Сделано с любовью к дизайну и чистому коду.</p>
+      <div class="footer-location">
+        <span>📍 Сочи, Россия</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div class="toast-notification" id="toast" role="status" aria-live="polite">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastMessage">Скопировано в буфер обмена!</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
