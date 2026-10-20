@@ -13,8 +13,8 @@ const SITE_CONFIG = {
   // Основная информация о владельце
   profile: {
     name: "Радикал",
-    nickname: "rad1kal",
-    age: 18,
+    nickname: "rad1kalov",
+    age: 16,
     location: "Сочи, Россия 🌴",
     statusText: "Открыт к новым заказам и проектам",
     isAvailable: true,
@@ -23,22 +23,22 @@ const SITE_CONFIG = {
   // Ссылки на Telegram для разных типов заказов (можно указать разные ссылки/сообщения)
   telegramLinks: {
     // Главная общая ссылка
-    default: "https://t.me/m/SK5JK1LAMzky",
+    default: "https://t.me/m/oIkHXQwGNmJi",
     // Специфические ссылки под каждый тип задачи (с авто-текстом обращения)
-    uiux: "https://t.me/m/SK5JK1LAMzky?text=Здравствуйте!%20Хочу%20заказать%20UI/UX%20дизайн",
-    graphic: "https://t.me/m/SK5JK1LAMzky?text=Здравствуйте!%20Хочу%20заказать%20графический%20дизайн%20или%20брендинг",
-    python: "https://t.me/m/SK5JK1LAMzky?text=Здравствуйте!%20Хочу%20заказать%20Python%20разработку%20или%20бота",
-    glua: "https://t.me/m/SK5JK1LAMzky?text=Здравствуйте!%20Хочу%20заказать%20gLua%20скрипт%20для%20Garrys%20Mod",
-    frontend: "https://t.me/m/SK5JK1LAMzky?text=Здравствуйте!%20Хочу%20заказать%20адаптивную%20вёрстку%20сайта",
-    turnkey: "https://t.me/m/SK5JK1LAMzky?text=Здравствуйте!%20Хочу%20заказать%20комплексный%20проект%20под%20ключ",
-    consultation: "https://t.me/m/SK5JK1LAMzky?text=Здравствуйте!%20Хочу%20проконсультироваться%20по%20проекту"
+    uiux: "https://t.me/m/Sc6CByQ4NWVi",
+    graphic: "https://t.me/m/9hWKEMMBNGZi",
+    python: "https://t.me/m/hALZA7ThZWMy",
+    glua: "https://t.me/m/DJcChJHAYTZi",
+    frontend: "https://t.me/m/qhE4qscvMmJi",
+    turnkey: "https://t.me/m/n086MAHcY2Ey",
+    consultation: "https://t.me/m/RcUPJbqKNjFi"
   },
 
   // Социальные сети
   socials: {
-    telegram: "https://t.me/m/SK5JK1LAMzky",
-    github: "https://github.com/rad1kal",
-    discord: "rad1kal", // Discord тег для копирования
+    telegram: "https://t.me/rad1kalc",
+    github: "https://github.com/rad1kalov",
+    discord: "rad1kalov", // Discord тег для копирования
     vk: "https://vk.com"
   },
 
