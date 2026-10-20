@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тарифы & Прайс-лист — Радикал (UI/UX, Графика, Python, gLua)</title>
+  <meta name="description" content="Официальный прайс-лист и тарифы Радикала на UI/UX дизайн, графику, разработку ботов на Python, gLua скрипты Garry's Mod и сайты под ключ.">
+  <meta name="keywords" content="Радикал, прайс-лист, тарифы, заказать дизайн, стоимость UI/UX, заказать telegram бота, разработка gLua">
+  
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Тарифы & Прайс-лист — Радикал">
+  <meta property="og:description" content="Прозрачные тарифы: Базовый, Про, Премиум на дизайн интерфейсов, графику и разработку.">
+  <meta property="og:url" content="https://t.me/m/SK5JK1LAMzky">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%230b0d14'/><text x='50%' y='55%' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='800' font-size='56' fill='%238b5cf6'>R</text></svg>">
+
+  <style>
+    /* Specific styles for standalone Pricing page */
+    .page-hero {
+      padding-top: calc(var(--header-height) + 50px);
+      padding-bottom: 40px;
+      text-align: center;
+    }
+    .breadcrumb-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-dark-muted);
+      margin-bottom: 18px;
+    }
+    .breadcrumb-nav a {
+      color: var(--accent-purple-light);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    .breadcrumb-nav a:hover {
+      color: #ffffff;
+    }
+    .breadcrumb-separator {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Included Features Grid */
+    .guarantee-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin: 60px 0 80px 0;
+    }
+    .guarantee-card {
+      padding: 26px 22px;
+      text-align: left;
+    }
+    .guarantee-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .guarantee-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 8px;
+    }
+    .guarantee-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      padding: 60px 0 90px 0;
+    }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+    .faq-card {
+      padding: 28px 24px;
+    }
+    .faq-question {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .faq-question svg {
+      color: var(--accent-purple);
+      flex-shrink: 0;
+    }
+    .faq-answer {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    @media (max-width: 1024px) {
+      .guarantee-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      .guarantee-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Glow Background Canvas / Orbs -->
+  <div class="ambient-glow" aria-hidden="true">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="site-header" id="header">
+    <div class="header-container">
+      <a href="../index.html" class="brand-logo" aria-label="Радикал - На главную">
+        <span class="logo-symbol">R</span>
+        <span class="logo-text">Радикал<span class="logo-dot">.</span></span>
+      </a>
+
+      <nav class="nav-desktop" aria-label="Основное меню">
+        <ul class="nav-list">
+          <li><a href="../index.html" class="nav-link">Главная</a></li>
+          <li><a href="../index.html#about" class="nav-link">Обо мне</a></li>
+          <li><a href="../index.html#services" class="nav-link">Направления</a></li>
+          <li><a href="index.html" class="nav-link active">Тарифы</a></li>
+          <li><a href="../index.html#portfolio" class="nav-link">Кейсы</a></li>
+          <li><a href="../index.html#contacts" class="nav-link">Контакты</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm glow-button" data-order-type="default">
+          <span class="btn-text">Заказать проект</span>
+          <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+
+        <button class="burger-menu-btn" id="burgerBtn" aria-label="Открыть мобильное меню" aria-expanded="false">
+          <span class="burger-bar"></span>
+          <span class="burger-bar"></span>
+          <span class="burger-bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+    <div class="mobile-drawer-content">
+      <nav class="mobile-nav" aria-label="Мобильное меню">
+        <ul class="mobile-nav-list">
+          <li><a href="../index.html" class="mobile-nav-link">Главная</a></li>
+          <li><a href="../index.html#about" class="mobile-nav-link">Обо мне</a></li>
+          <li><a href="../index.html#services" class="mobile-nav-link">Направления</a></li>
+          <li><a href="index.html" class="mobile-nav-link">Тарифы</a></li>
+          <li><a href="../index.html#portfolio" class="mobile-nav-link">Кейсы</a></li>
+          <li><a href="../index.html#contacts" class="mobile-nav-link">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="mobile-drawer-footer">
+        <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-block glow-button" data-order-type="default">
+          <span>Заказать в Telegram</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+      <div class="container">
+        
+        <div class="breadcrumb-nav">
+          <a href="../index.html">Главная</a>
+          <span class="breadcrumb-separator">/</span>
+          <span>Тарифы & Стоимость</span>
+        </div>
+
+        <div class="section-header">
+          <span class="section-tag">// Официальный прайс-лист</span>
+          <h1 class="section-title">Тарифы и стоимость разработки & дизайна</h1>
+          <p class="section-subtitle">
+            Прозрачные фиксированные условия: от экспресс-задач за пару дней до масштабных проектов под ключ. Выберите категорию услуг ниже.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DYNAMIC PRICING SECTION -->
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        
+        <!-- Category Tab Switcher (Populated from config.js) -->
+        <div class="pricing-tabs-container" id="pricingTabs"></div>
+
+        <!-- 3-Tier Cards (Basic, Pro, Premium) with non-overlapping badges -->
+        <div class="pricing-cards-grid" id="pricingCardsGrid"></div>
+
+        <!-- Consultation Footer Note -->
+        <div class="pricing-footer-note glass-panel">
+          <div class="note-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <div class="note-text">
+            <strong>Нестандартная задача или проект с особыми требованиями?</strong> 
+            Напишите мне напрямую в Telegram. Мы детально разберем ваше ТЗ и согласуем индивидуальные сроки и стоимость.
+          </div>
+          <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" data-order-type="consultation">
+            <span>Индивидуальный расчет</span>
+          </a>
+        </div>
+
+        <!-- GUARANTEES / WHAT'S INCLUDED IN ALL TIERS -->
+        <div class="guarantee-grid">
+          <div class="guarantee-card glass-panel tilt-card">
+            <div class="guarantee-icon icon-purple">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <h3 class="guarantee-title">100% Авторская работа</h3>
+            <p class="guarantee-desc">Без шаблонных решений и стоков. Каждый пиксель и строчка кода создаются под ваши задачи.</p>
+          </div>
+
+          <div class="guarantee-card glass-panel tilt-card">
+            <div class="guarantee-icon icon-blue">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            </div>
+            <h3 class="guarantee-title">Строгие дедлайны</h3>
+            <p class="guarantee-desc">Срок выполнения фиксируется до начала работы. Я всегда на связи и сдаю проекты вовремя.</p>
+          </div>
+
+          <div class="guarantee-card glass-panel tilt-card">
+            <div class="guarantee-icon icon-cyan">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <h3 class="guarantee-title">Исходники под ключ</h3>
+            <p class="guarantee-desc">Все исходные файлы: макеты в Figma, скрипты на Python и gLua со структурированными комментариями.</p>
+          </div>
+
+          <div class="guarantee-card glass-panel tilt-card">
+            <div class="guarantee-icon icon-emerald">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <h3 class="guarantee-title">Гарантия & Поддержка</h3>
+            <p class="guarantee-desc">Бесплатные правки в рамках ТЗ, помощь с установкой на сервер и консультация после релиза.</p>
+          </div>
+        </div>
+
+        <!-- FAQ SECTION -->
+        <div class="faq-section">
+          <div class="section-header">
+            <span class="section-tag">// Вопросы и ответы</span>
+            <h2 class="section-title">Часто задаваемые вопросы</h2>
+          </div>
+
+          <div class="faq-grid">
+            <div class="faq-card glass-panel">
+              <h3 class="faq-question">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Как происходит процесс оплаты?
+              </h3>
+              <p class="faq-answer">
+                Обычно работа строится по схеме 50% предоплата перед началом проектирования и 50% после утверждения финального результата. 
+                Для масштабных задач возможна поэтапная оплата за каждый спринт.
+              </p>
+            </div>
+
+            <div class="faq-card glass-panel">
+              <h3 class="faq-question">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Сколько раундов правок включено в тариф?
+              </h3>
+              <p class="faq-answer">
+                В Базовый тариф входит 1 раунд аргументированных правок, в Про — до 3 раундов. 
+                В тарифе Премиум правки не ограничены до полного утверждения результата.
+              </p>
+            </div>
+
+            <div class="faq-card glass-panel">
+              <h3 class="faq-question">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                В каких форматах я получу исходные файлы?
+              </h3>
+              <p class="faq-answer">
+                Для дизайна: ссылки на проект в Figma с организованными фреймами, компонентами и экспортом в PNG/SVG/PDF. 
+                Для кода: чистый репозиторий с файлами .py, .lua или .html/.css/.js, файлом конфигурации и подробным README.
+              </p>
+            </div>
+
+            <div class="faq-card glass-panel">
+              <h3 class="faq-question">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Можно ли заказать дизайн и сразу верстку/бота?
+              </h3>
+              <p class="faq-answer">
+                Да! Для этого предназначен тариф «Продукт под ключ». Я сам рисую продуманный UI/UX макет и сразу же реализую его в чистом коде, экономя ваше время и бюджет на поиск разных специалистов.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM CTA -->
+        <div class="cta-banner glass-panel">
+          <div class="cta-glow-bg"></div>
+          <div class="cta-content">
+            <span class="cta-tag">Готовы приступить?</span>
+            <h2 class="cta-title">Начните проект уже сегодня</h2>
+            <p class="cta-subtitle">
+              Напишите мне в Telegram выбранный тариф или задачу, и я отвечу в течение 15 минут с деталями и планом реализации.
+            </p>
+            <div class="cta-actions">
+              <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg glow-button" data-order-type="default">
+                <span class="btn-text">Написать в Telegram</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><path d="M22 2L15 22L11 13L2 9L22 2Z"></path></svg>
+              </a>
+              <a href="../index.html" class="btn btn-secondary btn-lg">
+                <span>Вернуться на главную</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <a href="../index.html" class="brand-logo">
+          <span class="logo-symbol">R</span>
+          <span class="logo-text">Радикал<span class="logo-dot">.</span></span>
+        </a>
+        <p class="footer-tagline">18-летний дизайнер & программист из Сочи.<br>UI/UX, графика, Python, gLua, Web.</p>
+      </div>
+
+      <div class="footer-nav">
+        <span class="footer-heading">Навигация</span>
+        <ul>
+          <li><a href="../index.html">Главная</a></li>
+          <li><a href="../index.html#about">Обо мне</a></li>
+          <li><a href="../index.html#services">Направления</a></li>
+          <li><a href="index.html">Тарифы</a></li>
+          <li><a href="../index.html#portfolio">Кейсы</a></li>
+          <li><a href="../index.html#contacts">Контакты</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-cta-col">
+        <span class="footer-heading">Сотрудничество</span>
+        <p>Готов обсудить задачу прямо сейчас</p>
+        <a href="https://t.me/m/SK5JK1LAMzky" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm glow-button" data-order-type="default">
+          <span>Заказать дизайн</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© 2026 Радикал. Все права защищены. Сделано с любовью к дизайну и чистому коду.</p>
+      <div class="footer-location">
+        <span>📍 Сочи, Россия</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div class="toast-notification" id="toast" role="status" aria-live="polite">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastMessage">Скопировано в буфер обмена!</span>
+  </div>
+
+  <!-- Load Config first, then Scripts -->
+  <script src="../config.js"></script>
+  <script src="../script.js"></script>
+</body>
+</html>
